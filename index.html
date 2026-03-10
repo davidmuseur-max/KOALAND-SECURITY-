@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>KOALAND — Pilotage Sécurité 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0B1628;
+  --navy2: #122040;
+  --navy3: #1B3160;
+  --teal: #0EA5A0;
+  --teal-light: #14C9C3;
+  --red: #E53935;
+  --red-soft: #FF6B6B;
+  --orange: #F59E0B;
+  --green: #10B981;
+  --blue: #3B82F6;
+  --purple: #8B5CF6;
+  --white: #F0F6FF;
+  --gray: #8BA3C0;
+  --gray-light: #C8D8EC;
+  --border: rgba(255,255,255,0.08);
+  --card: rgba(255,255,255,0.04);
+  --card-hover: rgba(255,255,255,0.07);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--navy);
+  color: var(--white);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ──────────────── LAYOUT ──────────────── */
+.app { display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: var(--navy2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-header {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--teal), var(--teal-light));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--navy);
+  flex-shrink: 0;
+}
+
+.logo-text {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  color: #fff;
+}
+
+.logo-sub {
+  font-size: 11px;
+  color: var(--gray);
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+}
+
+.sidebar-nav { flex: 1; padding: 16px 12px; overflow-y: auto; }
+
+.nav-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--gray);
+  padding: 0 12px;
+  margin: 16px 0 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-light);
+  margin-bottom: 2px;
+  border: 1px solid transparent;
+  position: relative;
+}
+
+.nav-item:hover {
+  background: var(--card-hover);
+  color: #fff;
+}
+
+.nav-item.active {
+  background: rgba(14, 165, 160, 0.15);
+  border-color: rgba(14, 165, 160, 0.3);
+  color: var(--teal-light);
+}
+
+.nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+.nav-item .nav-badge {
+  margin-left: auto;
+  background: var(--red);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.nav-item .nav-badge.green { background: var(--green); }
+.nav-item .nav-badge.orange { background: var(--orange); color: var(--navy); }
+
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.consultant-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.consultant-name { font-size: 13px; font-weight: 600; color: #fff; }
+.consultant-role { font-size: 11px; color: var(--gray); margin-top: 2px; }
+.consultant-contact {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--teal-light);
+  text-decoration: none;
+}
+
+/* MAIN */
+.main-content {
+  margin-left: 260px;
+  flex: 1;
+  min-width: 0;
+}
+
+.page-header {
+  padding: 28px 32px 0;
+  border-bottom: 1px solid var(--border);
+  background: rgba(11, 22, 40, 0.8);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.page-header-inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 20px;
+}
+
+.page-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  font-size: 13px;
+  color: var(--gray);
+  margin-top: 4px;
+}
+
+.page-body { padding: 28px 32px; }
+
+/* ──────────────── COMPOSANTS ──────────────── */
+
+/* CARDS */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: border-color 0.15s;
+}
+
+.card:hover { border-color: rgba(255,255,255,0.14); }
+
+.card-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--teal);
+  margin-bottom: 14px;
+}
+
+/* KPI GRID */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.kpi-card.green::before { background: var(--green); }
+.kpi-card.red::before { background: var(--red); }
+.kpi-card.orange::before { background: var(--orange); }
+.kpi-card.blue::before { background: var(--blue); }
+.kpi-card.teal::before { background: var(--teal); }
+
+.kpi-label { font-size: 11px; color: var(--gray); margin-bottom: 6px; }
+.kpi-value { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: #fff; }
+.kpi-target { font-size: 11px; color: var(--gray); margin-top: 4px; }
+.kpi-trend { font-size: 12px; margin-top: 6px; }
+.kpi-trend.up { color: var(--green); }
+.kpi-trend.down { color: var(--red); }
+.kpi-trend.stable { color: var(--orange); }
+
+/* BADGES STATUTS */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.badge-critique { background: rgba(229, 57, 53, 0.2); color: #FF7070; border: 1px solid rgba(229,57,53,0.4); }
+.badge-urgente { background: rgba(229, 57, 53, 0.15); color: #FF9090; border: 1px solid rgba(229,57,53,0.3); }
+.badge-elevee { background: rgba(245, 158, 11, 0.2); color: #FCD34D; border: 1px solid rgba(245,158,11,0.3); }
+.badge-moderee { background: rgba(59, 130, 246, 0.2); color: #93C5FD; border: 1px solid rgba(59,130,246,0.3); }
+.badge-importante { background: rgba(139, 92, 246, 0.2); color: #C4B5FD; border: 1px solid rgba(139,92,246,0.3); }
+
+.badge-afaire { background: rgba(229, 57, 53, 0.15); color: #FF9090; border: 1px solid rgba(229,57,53,0.3); }
+.badge-encours { background: rgba(245, 158, 11, 0.2); color: #FCD34D; border: 1px solid rgba(245,158,11,0.3); }
+.badge-commande { background: rgba(59, 130, 246, 0.2); color: #93C5FD; border: 1px solid rgba(59,130,246,0.3); }
+.badge-attente { background: rgba(139, 92, 246, 0.15); color: #C4B5FD; border: 1px solid rgba(139,92,246,0.3); }
+.badge-valide { background: rgba(16, 185, 129, 0.2); color: #6EE7B7; border: 1px solid rgba(16,185,129,0.3); }
+.badge-termine { background: rgba(16, 185, 129, 0.3); color: #34D399; border: 1px solid rgba(16,185,129,0.5); }
+.badge-bloque { background: rgba(100,100,100,0.2); color: #aaa; border: 1px solid rgba(100,100,100,0.3); }
+
+/* PROGRESS */
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--teal), var(--teal-light));
+  transition: width 0.6s ease;
+}
+
+.progress-fill.red { background: linear-gradient(90deg, #E53935, #FF6B6B); }
+.progress-fill.orange { background: linear-gradient(90deg, #D97706, #F59E0B); }
+
+/* ACTIONS LIST */
+.actions-list { display: flex; flex-direction: column; gap: 10px; }
+
+.action-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  transition: all 0.15s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.action-item:hover {
+  border-color: rgba(14, 165, 160, 0.3);
+  background: var(--card-hover);
+}
+
+.action-item.critique { border-left: 3px solid var(--red); }
+.action-item.urgente { border-left: 3px solid #FF6B6B; }
+.action-item.elevee { border-left: 3px solid var(--orange); }
+.action-item.moderee { border-left: 3px solid var(--blue); }
+.action-item.importante { border-left: 3px solid var(--purple); }
+
+.action-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.action-id {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--teal);
+  background: rgba(14, 165, 160, 0.1);
+  padding: 3px 8px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.action-titre {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.action-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.action-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--gray);
+}
+
+.action-score {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  min-width: 40px;
+  text-align: right;
+}
+
+.action-score.crit { color: var(--red-soft); }
+.action-score.high { color: var(--orange); }
+.action-score.med { color: var(--blue); }
+.action-score.low { color: var(--green); }
+
+/* DETAIL PANEL */
+.detail-panel {
+  display: none;
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  margin-top: 10px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 0 0 10px 10px;
+}
+
+.detail-panel.open { display: block; }
+
+/* SELECT STATUT */
+.statut-select {
+  appearance: none;
+  background: var(--navy2);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  padding: 8px 14px;
+  cursor: pointer;
+  outline: none;
+  width: 100%;
+  max-width: 200px;
+}
+
+.statut-select:focus { border-color: var(--teal); }
+
+.note-input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  padding: 10px 14px;
+  resize: vertical;
+  min-height: 70px;
+  margin-top: 10px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.note-input:focus { border-color: var(--teal); }
+.note-input::placeholder { color: rgba(255,255,255,0.2); }
+
+/* BOUTONS */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--teal), var(--teal-light));
+  color: var(--navy);
+}
+.btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+
+.btn-danger {
+  background: rgba(229, 57, 53, 0.2);
+  color: #FF7070;
+  border: 1px solid rgba(229,57,53,0.4);
+}
+.btn-danger:hover { background: rgba(229, 57, 53, 0.35); }
+
+.btn-ghost {
+  background: var(--card);
+  color: var(--gray-light);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--card-hover); color: #fff; }
+
+.btn-sm { padding: 7px 14px; font-size: 12px; }
+
+/* GRID 2 cols */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+/* PIÈCES MANQUANTES */
+.piece-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  transition: border-color 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.piece-card.bloquant { border-left: 4px solid var(--red); }
+.piece-card.attente { border-left: 4px solid var(--orange); }
+.piece-card.partiel { border-left: 4px solid var(--blue); }
+.piece-card.encours { border-left: 4px solid var(--purple); }
+
+.piece-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.piece-id { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--teal); margin-bottom: 4px; }
+.piece-titre { font-size: 14px; font-weight: 600; color: #fff; }
+.piece-detail { font-size: 12px; color: var(--gray); line-height: 1.5; margin-top: 6px; }
+.piece-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.piece-meta { font-size: 12px; color: var(--gray); display: flex; align-items: center; gap: 5px; }
+
+/* DOCUMENTS TABLE */
+.doc-table { width: 100%; border-collapse: collapse; }
+.doc-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gray);
+  padding: 0 12px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.doc-table td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 13px;
+  vertical-align: middle;
+}
+.doc-table tr:hover td { background: var(--card); }
+
+/* ZONES */
+.zone-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.zone-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.zone-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.zone-dot.green { background: var(--green); box-shadow: 0 0 8px var(--green); }
+.zone-dot.orange { background: var(--orange); box-shadow: 0 0 8px var(--orange); }
+.zone-dot.red { background: var(--red); box-shadow: 0 0 8px var(--red); }
+.zone-dot.blue { background: var(--blue); box-shadow: 0 0 8px var(--blue); }
+
+/* EMAIL MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--navy2);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px;
+  width: 90%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.email-preview {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  font-size: 13px;
+  color: var(--gray-light);
+  white-space: pre-wrap;
+  line-height: 1.7;
+  font-family: 'DM Mono', monospace;
+  max-height: 280px;
+  overflow-y: auto;
+  margin: 16px 0;
+}
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--navy2);
+  border: 1px solid var(--teal);
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 13px;
+  color: var(--teal-light);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 999;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* FILTERS */
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.filter-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--gray-light);
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.filter-btn.active {
+  background: rgba(14, 165, 160, 0.2);
+  border-color: rgba(14, 165, 160, 0.5);
+  color: var(--teal-light);
+}
+
+/* SECTION DIVIDER */
+.section-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 28px 0;
+}
+
+/* MOBILE TOPBAR */
+.mobile-topbar {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 60px;
+  background: var(--navy2);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 150;
+}
+
+.burger-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 6px;
+}
+
+.sidebar-close {
+  display: none;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--gray);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* STAT ROW */
+.stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.stat-row:last-child { border-bottom: none; }
+.stat-row-label { font-size: 13px; color: var(--gray); }
+.stat-row-value { font-size: 13px; font-weight: 600; color: #fff; }
+
+/* ALERT BANNER */
+.alert-banner {
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.alert-banner.red {
+  background: rgba(229, 57, 53, 0.1);
+  border: 1px solid rgba(229,57,53,0.3);
+  border-left: 4px solid var(--red);
+  color: #FFAAAA;
+}
+
+.alert-banner.orange {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-left: 4px solid var(--orange);
+  color: #FDE68A;
+}
+
+.alert-banner.green {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16,185,129,0.2);
+  border-left: 4px solid var(--green);
+  color: #A7F3D0;
+}
+
+/* ──────────────── MOBILE ──────────────── */
+@media (max-width: 900px) {
+  .mobile-topbar { display: flex; }
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-close { display: block; }
+  .main-content { margin-left: 0; padding-top: 60px; }
+  .page-body { padding: 20px 16px; }
+  .page-header { padding: 16px 16px 0; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .zone-grid { grid-template-columns: 1fr; }
+  .action-header { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE TOPBAR -->
+<div class="mobile-topbar">
+  <button class="burger-btn" onclick="toggleSidebar()">☰</button>
+  <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;letter-spacing:0.08em">KOALAND</div>
+  <div style="font-size:12px;color:var(--gray)">Sécurité 2026</div>
+</div>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+    <div class="sidebar-header">
+      <div class="logo-mark">
+        <div class="logo-icon">K</div>
+        <div class="logo-text">KOALAND</div>
+      </div>
+      <div class="logo-sub">Pilotage Sécurité — 2026</div>
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Vue générale</div>
+      <div class="nav-item active" onclick="showPage('dashboard', this)">
+        <span class="nav-icon">⊞</span> Tableau de bord
+      </div>
+
+      <div class="nav-section-label">Pilotage</div>
+      <div class="nav-item" onclick="showPage('actions', this)" id="nav-actions">
+        <span class="nav-icon">✓</span> Plan d'action
+        <span class="nav-badge" id="badge-actions">20</span>
+      </div>
+      <div class="nav-item" onclick="showPage('pieces', this)" id="nav-pieces">
+        <span class="nav-icon">📋</span> Pièces manquantes
+        <span class="nav-badge" id="badge-pieces">6</span>
+      </div>
+
+      <div class="nav-section-label">Gestion</div>
+      <div class="nav-item" onclick="showPage('documents', this)">
+        <span class="nav-icon">📁</span> Documents
+      </div>
+      <div class="nav-item" onclick="showPage('zones', this)">
+        <span class="nav-icon">🗺</span> Zones du parc
+      </div>
+
+      <div class="nav-section-label">Communication</div>
+      <div class="nav-item" onclick="showPage('relances', this)">
+        <span class="nav-icon">✉️</span> Relances & Emails
+      </div>
+
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="consultant-card">
+        <div class="consultant-name">David MUSEUR</div>
+        <div class="consultant-role">Expert Sécurité — Cabinet SECURE</div>
+        <a class="consultant-contact" href="tel:0788965528">📞 07.88.96.55.28</a>
+        <a class="consultant-contact" href="mailto:David.museur@riskattitude.net" style="margin-top:2px">✉ David.museur@riskattitude.net</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- ═══════ DASHBOARD ═══════ -->
+    <div id="page-dashboard">
+      <div class="page-header">
+        <div class="page-header-inner">
+          <div>
+            <div class="page-title">Tableau de bord</div>
+            <div class="page-subtitle">SAS Parc KOALAND — 5 Av. de la Madone, 06500 Menton — ERP PA 5ème cat. · Jauge 299 personnes</div>
+          </div>
+          <div style="text-align:right;font-size:12px;color:var(--gray)">
+            Dernière visite : 12–13 fév. 2026<br>
+            <span style="color:var(--teal)">Référent : Loris CARDARELLI</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-body">
+
+        <div class="alert-banner red" style="margin-bottom:20px">
+          <span>🔴</span>
+          <div><strong>3 pièces bloquantes non déposées</strong> — Le dépôt CERFA 13824*04, le plan masse As-Built et les attestations d'assurance sont obligatoires pour l'ouverture légale du parc. Responsable : John NAISSE.</div>
+        </div>
+
+        <!-- KPI -->
+        <div class="kpi-grid">
+          <div class="kpi-card red">
+            <div class="kpi-label">Levée de réserves</div>
+            <div class="kpi-value">15%</div>
+            <div class="kpi-target">Objectif : 100%</div>
+            <div class="kpi-trend up">↑ En hausse</div>
+            <div class="progress-bar"><div class="progress-fill red" style="width:15%"></div></div>
+          </div>
+          <div class="kpi-card orange">
+            <div class="kpi-label">Score risque moyen</div>
+            <div class="kpi-value">18<span style="font-size:14px;color:var(--gray)">/25</span></div>
+            <div class="kpi-target">Objectif : &lt; 10/25</div>
+            <div class="kpi-trend down">↓ En baisse</div>
+            <div class="progress-bar"><div class="progress-fill orange" style="width:72%"></div></div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-label">Conformité évacuation</div>
+            <div class="kpi-value">334%</div>
+            <div class="kpi-target">Objectif : &gt; 300%</div>
+            <div class="kpi-trend stable">→ Stable</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+          <div class="kpi-card blue">
+            <div class="kpi-label">Confiance Mairie</div>
+            <div class="kpi-value">2<span style="font-size:14px;color:var(--gray)">/5</span></div>
+            <div class="kpi-target">Objectif : 5/5</div>
+            <div class="kpi-trend up">↑ En hausse</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div>
+          </div>
+          <div class="kpi-card teal">
+            <div class="kpi-label">Budget sécurité</div>
+            <div class="kpi-value">2 500<span style="font-size:13px;color:var(--gray)"> €</span></div>
+            <div class="kpi-target">Enveloppe : 8 300 €</div>
+            <div class="kpi-trend up">↑ En cours</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom:20px">
+          <!-- Avancement actions -->
+          <div class="card">
+            <div class="card-title">Avancement du plan d'action</div>
+            <div id="dashboard-actions-summary"></div>
+            <div style="margin-top:16px">
+              <button class="btn btn-primary btn-sm" onclick="showPage('actions', document.querySelector('#nav-actions'))">Voir toutes les actions →</button>
+            </div>
+          </div>
+
+          <!-- Pièces manquantes -->
+          <div class="card">
+            <div class="card-title">Pièces manquantes critiques</div>
+            <div id="dashboard-pieces-summary"></div>
+            <div style="margin-top:16px">
+              <button class="btn btn-danger btn-sm" onclick="showPage('pieces', document.querySelector('#nav-pieces'))">Gérer les pièces →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Intervenants -->
+        <div class="card">
+          <div class="card-title">Intervenants clés</div>
+          <div class="grid-3">
+            <div style="padding:14px;background:rgba(0,0,0,0.2);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:11px;color:var(--teal);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Directeur</div>
+              <div style="font-size:14px;font-weight:600;color:#fff">John NAISSE</div>
+              <div style="font-size:12px;color:var(--gray);margin-top:2px">Responsable légal</div>
+            </div>
+            <div style="padding:14px;background:rgba(0,0,0,0.2);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:11px;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Responsable Site</div>
+              <div style="font-size:14px;font-weight:600;color:#fff">Loris CARDARELLI</div>
+              <div style="font-size:12px;color:var(--gray);margin-top:2px">Référent sécurité terrain</div>
+              <div style="font-size:11px;color:var(--teal);margin-top:6px">SST/EPI · Élec B0/H0 · Jauge 299</div>
+            </div>
+            <div style="padding:14px;background:rgba(0,0,0,0.2);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Expert Sécurité</div>
+              <div style="font-size:14px;font-weight:600;color:#fff">David MUSEUR</div>
+              <div style="font-size:12px;color:var(--gray);margin-top:2px">Cabinet SECURE</div>
+              <a href="tel:0788965528" style="font-size:11px;color:var(--teal);margin-top:6px;display:block;text-decoration:none">07.88.96.55.28</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════ ACTIONS ═══════ -->
+    <div id="page-actions" style="display:none">
+      <div class="page-header">
+        <div class="page-header-inner">
+          <div>
+            <div class="page-title">Plan d'action DUERP</div>
+            <div class="page-subtitle">20 actions — Audit CEEV + Risques terrain — Cabinet SECURE</div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-ghost btn-sm" onclick="openEmailModal('rapport')">📧 Envoyer rapport à David</button>
+          </div>
+        </div>
+      </div>
+      <div class="page-body">
+
+        <div id="actions-stats-row" style="margin-bottom:20px"></div>
+
+        <div class="filter-row" id="filter-row">
+          <span style="font-size:12px;color:var(--gray);font-weight:600">Filtrer :</span>
+          <button class="filter-btn active" onclick="filterActions('tous', this)">Tous</button>
+          <button class="filter-btn" onclick="filterActions('critique', this)">Critique</button>
+          <button class="filter-btn" onclick="filterActions('elevee', this)">Élevée</button>
+          <button class="filter-btn" onclick="filterActions('moderee', this)">Modérée</button>
+          <button class="filter-btn" onclick="filterActions('afaire', this)">À faire</button>
+          <button class="filter-btn" onclick="filterActions('encours', this)">En cours</button>
+          <button class="filter-btn" onclick="filterActions('valide', this)">Validé/Terminé</button>
+        </div>
+
+        <div class="actions-list" id="actions-list"></div>
+      </div>
+    </div>
+
+    <!-- ═══════ PIÈCES MANQUANTES ═══════ -->
+    <div id="page-pieces" style="display:none">
+      <div class="page-header">
+        <div class="page-header-inner">
+          <div>
+            <div class="page-title">Pièces manquantes critiques</div>
+            <div class="page-subtitle">6 documents bloquants pour le dépôt ERP complet — Responsable : John NAISSE</div>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="openEmailModal('relance')">🔴 Relancer John NAISSE</button>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="alert-banner red" style="margin-bottom:24px">
+          <span>⚠️</span>
+          <div><strong>PM-1, PM-3 et PM-5 sont bloquantes.</strong> Le parc ne peut pas légalement ouvrir sans ces 3 pièces. Action immédiate requise de John NAISSE.</div>
+        </div>
+        <div id="pieces-list" style="display:flex;flex-direction:column;gap:14px"></div>
+      </div>
+    </div>
+
+    <!-- ═══════ DOCUMENTS ═══════ -->
+    <div id="page-documents" style="display:none">
+      <div class="page-header">
+        <div class="page-header-inner">
+          <div>
+            <div class="page-title">Gestion documentaire</div>
+            <div class="page-subtitle">47 documents classés — Statuts mis à jour en mars 2026</div>
+          </div>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="card">
+          <div class="card-title">Index documentaire KOALAND</div>
+          <table class="doc-table" id="doc-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Document</th>
+                <th>Catégorie</th>
+                <th>Statut</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="doc-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ ZONES ═══════ -->
+    <div id="page-zones" style="display:none">
+      <div class="page-header">
+        <div class="page-header-inner">
+          <div>
+            <div class="page-title">Zones du parc</div>
+            <div class="page-subtitle">Parc KOALAND — 5 Av. de la Madone, Menton — 15 000 m²</div>
+          </div>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="alert-banner orange" style="margin-bottom:20px">
+          <span>⚠️</span>
+          <div><strong>Zone Nord Padel :</strong> Interdite au public — Balisage Heras opaque obligatoire (A18). Zone Gonflables suspendue — Lestage béton en cours (A20).</div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Zone Sud — Accès public autorisé</div>
+            <div class="zone-grid" id="zone-sud"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Zone Nord — Restrictions en vigueur</div>
+            <div class="zone-grid" id="zone-nord"></div>
+          </div>
+        </div>
+        <div style="margin-top:20px" class="card">
+          <div class="card-title">Légende statuts</div>
+          <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:8px">
+            <div style="display:flex;align-items:center;gap:8px"><div class="zone-dot green"></div><span style="font-size:13px;color:var(--gray-light)">Ouverte au public</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><div class="zone-dot orange"></div><span style="font-size:13px;color:var(--gray-light)">Accès restreint / Suspendue</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><div class="zone-dot red"></div><span style="font-size:13px;color:var(--gray-light)">Interdite au public</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><div class="zone-dot blue"></div><span style="font-size:13px;color:var(--gray-light)">En projet</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ RELANCES ═══════ -->
+    <div id="page-relances" style="display:none">
+      <div class="page-header">
+        <div class="page-header-inner">
+          <div>
+            <div class="page-title">Relances & Emails</div>
+            <div class="page-subtitle">Modèles d'emails pré-remplis — Loris CARDARELLI & John NAISSE</div>
+          </div>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Relances terrain — Loris CARDARELLI</div>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+              <button class="btn btn-ghost" style="justify-content:flex-start" onclick="openEmailModal('loris-urgent')">
+                🔴 Relance urgente — Actions A02 à A06
+              </button>
+              <button class="btn btn-ghost" style="justify-content:flex-start" onclick="openEmailModal('loris-hebdo')">
+                📊 Point hebdomadaire — Statuts actions
+              </button>
+              <button class="btn btn-ghost" style="justify-content:flex-start" onclick="openEmailModal('loris-photo')">
+                📷 Demande photos de preuve
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Relances direction — John NAISSE</div>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+              <button class="btn btn-danger" style="justify-content:flex-start" onclick="openEmailModal('john-cerfa')">
+                🚨 URGENT — Signature CERFA 13824*04
+              </button>
+              <button class="btn btn-ghost" style="justify-content:flex-start" onclick="openEmailModal('john-assurance')">
+                🛡 Attestations d'assurance manquantes
+              </button>
+              <button class="btn btn-ghost" style="justify-content:flex-start" onclick="openEmailModal('john-audit')">
+                ⚡ Audit électrique Q18 — APAVE/SOCOTEC
+              </button>
+              <button class="btn btn-ghost" style="justify-content:flex-start" onclick="openEmailModal('rapport')">
+                📋 Rapport de suivi global à David
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px" class="card">
+          <div class="card-title">Comment utiliser ces emails</div>
+          <div style="font-size:13px;color:var(--gray);line-height:1.7">
+            Cliquez sur un modèle ci-dessus → L'email s'affiche pré-rempli → Cliquez "Ouvrir dans Mail" pour l'envoyer depuis votre messagerie, ou "Copier" pour le coller manuellement.<br><br>
+            <strong style="color:var(--gray-light)">Important :</strong> Pensez à vérifier et compléter l'adresse email de Loris avant l'envoi.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- EMAIL MODAL -->
+<div class="modal-overlay" id="email-modal">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Email</div>
+    <div style="font-size:12px;color:var(--gray);margin-bottom:6px">Destinataire : <span id="modal-dest" style="color:var(--teal-light)"></span></div>
+    <div style="font-size:12px;color:var(--gray);margin-bottom:4px">Objet : <span id="modal-objet" style="color:#fff;font-weight:600"></span></div>
+    <div class="email-preview" id="modal-body"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a id="modal-mailto" href="#" class="btn btn-primary">✉️ Ouvrir dans Mail</a>
+      <button class="btn btn-ghost" onclick="copyEmail()">📋 Copier</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ <span id="toast-msg">Enregistré</span></div>
+
+<script>
+// ════════════════════════════════════════════════
+// DONNÉES KOALAND
+// ════════════════════════════════════════════════
+
+const DATA = {
+  actions: [
+    { id:"A01", titre:"Dépôt Mairie — Dossier CERFA 13824 + Notices", responsable:"J. NAISSE", echeance:"20/02/2026", criticite:20, niveau:"CRITIQUE", zone:"Admin / Urbanisme", statut:"A faire", note:"" },
+    { id:"A02", titre:"Chaises Volantes — Anti-arrachement charnière store", responsable:"L. CARDARELLI", echeance:"27/02/2026", criticite:20, niveau:"URGENTE", zone:"Zone Manèges", statut:"A faire", note:"" },
+    { id:"A03", titre:"Chaises Volantes — Clapets anti-retour vérins hydrauliques", responsable:"L. CARDARELLI", echeance:"27/02/2026", criticite:20, niveau:"URGENTE", zone:"Zone Manèges", statut:"A faire", note:"" },
+    { id:"A04", titre:"Chaises Volantes — Différentiel 30mA + mise à la terre", responsable:"L. CARDARELLI", echeance:"27/02/2026", criticite:20, niveau:"URGENTE", zone:"Zone Manèges", statut:"A faire", note:"" },
+    { id:"A05", titre:"Chaises Volantes — Protection tubes néons (vibrations/projectiles)", responsable:"L. CARDARELLI", echeance:"27/02/2026", criticite:20, niveau:"URGENTE", zone:"Zone Manèges", statut:"A faire", note:"" },
+    { id:"A06", titre:"Chaises Volantes — Blocs de secours type Lumen (panne élec.)", responsable:"L. CARDARELLI", echeance:"27/02/2026", criticite:20, niveau:"URGENTE", zone:"Zone Manèges", statut:"A faire", note:"" },
+    { id:"A07", titre:"Carrousel — Pose ceintures de sécurité sujets / voitures", responsable:"L. CARDARELLI", echeance:"06/03/2026", criticite:14, niveau:"IMPORTANTE", zone:"Zone Manèges", statut:"A faire", note:"" },
+    { id:"A08", titre:"Carrousel — Barriérage type K1 à K5 (périmètre)", responsable:"L. CARDARELLI", echeance:"06/03/2026", criticite:14, niveau:"IMPORTANTE", zone:"Zone Manèges", statut:"A faire", note:"" },
+    { id:"A09", titre:"Carrousel — Affichage pupitre de commande en français", responsable:"L. CARDARELLI", echeance:"06/03/2026", criticite:14, niveau:"IMPORTANTE", zone:"Zone Manèges", statut:"A faire", note:"" },
+    { id:"A10", titre:"Carrousel — Application antidérapant sur les planchers", responsable:"L. CARDARELLI", echeance:"06/03/2026", criticite:14, niveau:"IMPORTANTE", zone:"Zone Manèges", statut:"A faire", note:"" },
+    { id:"A11", titre:"Pêche aux Canards — Différentiel 30mA amont boutique", responsable:"Électricien", echeance:"21/03/2026", criticite:9, niveau:"MODÉRÉE", zone:"Zone Jeux Eau", statut:"A faire", note:"" },
+    { id:"A12", titre:"Dépôt CERFA 13824 — Dossier complet urbanisme + ERP", responsable:"J. NAISSE", echeance:"Immédiat", criticite:20, niveau:"CRITIQUE", zone:"Admin", statut:"A faire", note:"" },
+    { id:"A13", titre:"Notice dérogation SPR / ABF — Patrimoine et accessibilité", responsable:"Expert SECURE", echeance:"Mars 2026", criticite:16, niveau:"ÉLEVÉE", zone:"Admin / Urbanisme", statut:"A faire", note:"" },
+    { id:"A14", titre:"Audit électrique Q18 — Bureau de contrôle agréé (APAVE/SOCOTEC)", responsable:"J. NAISSE", echeance:"24/02/2026", criticite:25, niveau:"CRITIQUE", zone:"Locaux Techniques", statut:"En attente", note:"" },
+    { id:"A15", titre:"Chaises Volantes — Clapets & Store (synthèse CEEV)", responsable:"L. CARDARELLI", echeance:"27/02/2026", criticite:15, niveau:"ÉLEVÉE", zone:"Zone Manèges", statut:"A faire", note:"" },
+    { id:"A16", titre:"Carrousel — Ceintures & Barriérage K (synthèse CEEV)", responsable:"L. CARDARELLI", echeance:"06/03/2026", criticite:12, niveau:"MODÉRÉE", zone:"Zone Manèges", statut:"A faire", note:"" },
+    { id:"A17", titre:"Hygiène sanitaires — Protocole nettoyage + fiche émargement", responsable:"Personnel", echeance:"Immédiat", criticite:9, niveau:"MODÉRÉE", zone:"Sanitaires", statut:"A faire", note:"" },
+    { id:"A18", titre:"Balisage Zone Nord (Padel) — Bâches opaques Heras", responsable:"L. CARDARELLI", echeance:"20/02/2026", criticite:16, niveau:"ÉLEVÉE", zone:"Zone Nord", statut:"Commandé", note:"" },
+    { id:"A19", titre:"Protections moteurs Chenille — Grillages/carters périmétriques", responsable:"Tech Site", echeance:"20/02/2026", criticite:15, niveau:"ÉLEVÉE", zone:"Zone Manèges", statut:"En cours", note:"" },
+    { id:"A20", titre:"Lestage structures gonflables — Béton 50 kg par ancrage", responsable:"L. CARDARELLI", echeance:"21/02/2026", criticite:10, niveau:"ÉLEVÉE", zone:"Zone Gonflables", statut:"Validé", note:"" },
+  ],
+  pieces: [
+    { id:"PM-1", titre:'Plan masse "As-Built" annoté', detail:"Zones ouvertes (vert) / fermées (rouge), accès secours, extincteurs, point rassemblement", delai:"J+0 — BLOQUANT", statut:"Manquant", responsable:"John NAISSE / Architecte", urgence:"bloquant" },
+    { id:"PM-2", titre:"Rapport Q18 électrique", detail:"Vérification périodique par organisme agréé (APAVE ou SOCOTEC)", delai:"J+7 — 24/02/2026", statut:"En attente", responsable:"John NAISSE", urgence:"attente" },
+    { id:"PM-3", titre:"Attestations d'assurance", detail:"RC exploitation + multirisque + clause renonciation recours contre la commune (Art. 16 convention)", delai:"J+0 — BLOQUANT", statut:"Partiel", responsable:"John NAISSE", urgence:"bloquant" },
+    { id:"PM-4", titre:"Rapport technique manèges CEEV", detail:"Certificats de conformité — Chaises Volantes et Carrousel (NF EN 13814)", delai:"J+7", statut:"Partiel", responsable:"L. CARDARELLI / Expert SECURE", urgence:"partiel" },
+    { id:"PM-5", titre:"CERFA 13824*04 signé", detail:"Formulaire complet — signature du représentant légal (John NAISSE) requise", delai:"J+0 — BLOQUANT", statut:"Signature manquante", responsable:"John NAISSE", urgence:"bloquant" },
+    { id:"PM-6", titre:"Notice d'accessibilité PMR", detail:"Demande de dérogation topographique (pente terrain naturel)", delai:"J+15", statut:"En cours", responsable:"David MUSEUR", urgence:"encours" },
+  ],
+  documents: [
+    { id:"D01", nom:"Rapport Conformité v1.3", cat:"Rapport technique", statut:"VALIDE", date:"11/02/2026" },
+    { id:"D02", nom:"Pilotage KOALAND V54", cat:"Pilotage / SMI", statut:"VALIDE", date:"19/02/2026" },
+    { id:"D03", nom:"SMIS Blueprint V44", cat:"Pilotage / SMI", statut:"VALIDE", date:"21/02/2026" },
+    { id:"D04", nom:"SMIS V42", cat:"Pilotage / SMI", statut:"OBSOLÈTE", date:"Antérieur V44" },
+    { id:"D05", nom:"Tableau Action Général Loris", cat:"Pilotage / Actions", statut:"VALIDE", date:"Fév 2026" },
+    { id:"D06", nom:"Rapport Audit Manèges CEEV", cat:"Audit technique", statut:"VALIDE", date:"19/02/2026" },
+    { id:"D07", nom:"Rapport Expertise Stratégique V3", cat:"Rapport stratégique", statut:"VALIDE", date:"13/02/2026" },
+    { id:"D08", nom:"Rapport Expertise V1.0", cat:"Rapport technique", statut:"OBSOLÈTE", date:"Antérieur V3" },
+    { id:"D09", nom:"Rapport Expertise V2", cat:"Rapport technique", statut:"OBSOLÈTE", date:"Antérieur V3" },
+    { id:"D11", nom:"CERFA 13824*04 (draft)", cat:"Administratif", statut:"EN ATTENTE SIGNATURE", date:"Fév 2026" },
+    { id:"D14", nom:"Convention d'Occupation — Mairie Menton", cat:"Juridique", statut:"VALIDE", date:"2026" },
+    { id:"D16", nom:"Avis Favorable Sous-Commission Sécurité", cat:"Réglementaire", statut:"VALIDE", date:"Fév 2026" },
+    { id:"D17", nom:"Plan masse version annotée", cat:"Plans", statut:"MANQUANT", date:"—" },
+    { id:"D18", nom:"Attestation assurance RC exploitation", cat:"Assurances", statut:"PARTIEL", date:"—" },
+    { id:"D19", nom:"Rapport Q18 électrique", cat:"Contrôle technique", statut:"EN ATTENTE", date:"—" },
+    { id:"D32", nom:"Facture SECURE Phase 1 — 13/02/2026", cat:"Facturation", statut:"VALIDE", date:"13/02/2026" },
+    { id:"D34", nom:"Facture SECURE Phase 2 — 17/02/2026", cat:"Facturation", statut:"VALIDE", date:"17/02/2026" },
+    { id:"D42", nom:"Tableau de Pilotage Opérationnel", cat:"Livrable SECURE", statut:"VALIDE", date:"Fév 2026" },
+    { id:"D43", nom:"Affiche Consignes Sécurité", cat:"Livrable SECURE", statut:"VALIDE", date:"Fév 2026" },
+    { id:"D44", nom:"Rapport Synthèse Manèges — John", cat:"Rapport", statut:"VALIDE", date:"Fév 2026" },
+    { id:"D45", nom:"Présentation Direction Manèges", cat:"Présentation", statut:"VALIDE", date:"Fév 2026" },
+    { id:"D46", nom:"Koaland Book Commercial", cat:"Commercial", statut:"VALIDE", date:"Nov 2026" },
+    { id:"D47", nom:"Spécifications projet eKoaland", cat:"Projet", statut:"VALIDE", date:"2026" },
+  ],
+  zones: {
+    sud: [
+      { nom:"Accueil / Entrée", statut:"OUVERTE", couleur:"green", eq:"Caisse, comptage jauge, affichages" },
+      { nom:"Allées / Manèges", statut:"OUVERTE", couleur:"green", eq:"Carrousel, Chaises Volantes, Trampolines, Mini-Golf" },
+      { nom:"Jeux d'eau", statut:"OUVERTE", couleur:"green", eq:"Pêche aux Canards" },
+      { nom:"Restauration / Snack", statut:"OUVERTE", couleur:"green", eq:"Snack Burger, hotte, gaz" },
+      { nom:"Locaux Techniques", statut:"ACCÈS RESTREINT", couleur:"orange", eq:"Tableaux électriques, stockage" },
+    ],
+    nord: [
+      { nom:"Zone Padel", statut:"INTERDITE AU PUBLIC", couleur:"red", eq:"Balisage Heras opaque obligatoire (A18)" },
+      { nom:"Zone eKoaland", statut:"EN PROJET", couleur:"blue", eq:"Livraison matériel prévue juin 2026" },
+      { nom:"Zone Gonflables", statut:"SUSPENDUE", couleur:"orange", eq:"Lestage béton en cours (A20)" },
+    ]
+  }
+};
+
+const STATUTS = ["A faire","En cours","Commandé","En attente","Validé","Terminé","Bloqué"];
+const STATUTS_PIECES = ["Manquant","En attente","Partiel","Signature manquante","En cours","Reçu","Validé"];
+
+// ════════════════════════════════════════════════
+// PERSISTANCE LOCALSTORAGE
+// ════════════════════════════════════════════════
+
+function loadState() {
+  const saved = localStorage.getItem('koaland_state');
+  if (saved) {
+    try {
+      const s = JSON.parse(saved);
+      if (s.actions) s.actions.forEach(sa => {
+        const a = DATA.actions.find(x => x.id === sa.id);
+        if (a) { a.statut = sa.statut; a.note = sa.note || ""; }
+      });
+      if (s.pieces) s.pieces.forEach(sp => {
+        const p = DATA.pieces.find(x => x.id === sp.id);
+        if (p) { p.statut = sp.statut; }
+      });
+    } catch(e) {}
+  }
+}
+
+function saveState() {
+  const state = {
+    actions: DATA.actions.map(a => ({ id: a.id, statut: a.statut, note: a.note })),
+    pieces: DATA.pieces.map(p => ({ id: p.id, statut: p.statut })),
+    updated: new Date().toISOString()
+  };
+  localStorage.setItem('koaland_state', JSON.stringify(state));
+}
+
+// ════════════════════════════════════════════════
+// RENDU — DASHBOARD
+// ════════════════════════════════════════════════
+
+function renderDashboardSummary() {
+  const byStatut = {};
+  DATA.actions.forEach(a => { byStatut[a.statut] = (byStatut[a.statut] || 0) + 1; });
+
+  const total = DATA.actions.length;
+  const done = (byStatut['Terminé'] || 0) + (byStatut['Validé'] || 0);
+  const inProgress = (byStatut['En cours'] || 0) + (byStatut['Commandé'] || 0);
+  const todo = byStatut['A faire'] || 0;
+  const waiting = byStatut['En attente'] || 0;
+  const pct = Math.round((done / total) * 100);
+
+  document.getElementById('dashboard-actions-summary').innerHTML = `
+    <div class="progress-bar" style="height:10px;margin-bottom:14px">
+      <div class="progress-fill" style="width:${pct}%"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+      <span style="font-size:22px;font-family:'Syne',sans-serif;font-weight:700;color:#fff">${pct}%</span>
+      <span style="font-size:12px;color:var(--gray);align-self:center">${done}/${total} actions terminées</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-row-label">🔴 À faire</span>
+      <span class="stat-row-value" style="color:#FF7070">${todo}</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-row-label">🟡 En cours / Commandé</span>
+      <span class="stat-row-value" style="color:#FCD34D">${inProgress}</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-row-label">🟣 En attente</span>
+      <span class="stat-row-value" style="color:#C4B5FD">${waiting}</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-row-label">✅ Validé / Terminé</span>
+      <span class="stat-row-value" style="color:#6EE7B7">${done}</span>
+    </div>
+  `;
+
+  const pmBloquant = DATA.pieces.filter(p => p.urgence === 'bloquant' && p.statut !== 'Reçu' && p.statut !== 'Validé').length;
+  const pmPartiel = DATA.pieces.filter(p => ['Partiel','En attente','Signature manquante'].includes(p.statut)).length;
+  const pmOk = DATA.pieces.filter(p => ['Reçu','Validé'].includes(p.statut)).length;
+
+  document.getElementById('dashboard-pieces-summary').innerHTML = `
+    <div class="alert-banner red" style="margin-bottom:12px;font-size:12px">
+      <span>🚨</span>
+      <div><strong>${pmBloquant} pièces bloquantes</strong> — Ouverture légale impossible sans elles.</div>
+    </div>
+    <div class="stat-row">
+      <span class="stat-row-label">🔴 Bloquant (J+0)</span>
+      <span class="stat-row-value" style="color:#FF7070">3</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-row-label">🟡 Partiel / En attente</span>
+      <span class="stat-row-value" style="color:#FCD34D">${pmPartiel}</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-row-label">🟣 En cours de rédaction</span>
+      <span class="stat-row-value" style="color:#C4B5FD">1</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-row-label">✅ Reçu / Validé</span>
+      <span class="stat-row-value" style="color:#6EE7B7">${pmOk}</span>
+    </div>
+  `;
+
+  // Update badge
+  const remaining = DATA.actions.filter(a => !['Terminé','Validé'].includes(a.statut)).length;
+  document.getElementById('badge-actions').textContent = remaining;
+  const pmRemaining = DATA.pieces.filter(p => !['Reçu','Validé'].includes(p.statut)).length;
+  document.getElementById('badge-pieces').textContent = pmRemaining;
+}
+
+// ════════════════════════════════════════════════
+// RENDU — ACTIONS
+// ════════════════════════════════════════════════
+
+function getBadgeClass(niveau) {
+  const n = niveau.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (n.includes('critique')) return 'badge-critique';
+  if (n.includes('urgente')) return 'badge-urgente';
+  if (n.includes('elevee') || n.includes('élevée')) return 'badge-elevee';
+  if (n.includes('moderee') || n.includes('modérée')) return 'badge-moderee';
+  if (n.includes('importante')) return 'badge-importante';
+  return 'badge-moderee';
+}
+
+function getStatutBadgeClass(statut) {
+  if (statut === 'A faire') return 'badge-afaire';
+  if (statut === 'En cours') return 'badge-encours';
+  if (statut === 'Commandé') return 'badge-commande';
+  if (statut === 'En attente') return 'badge-attente';
+  if (statut === 'Validé') return 'badge-valide';
+  if (statut === 'Terminé') return 'badge-termine';
+  if (statut === 'Bloqué') return 'badge-bloque';
+  return 'badge-attente';
+}
+
+function getScoreClass(c) {
+  if (c >= 20) return 'crit';
+  if (c >= 15) return 'high';
+  if (c >= 10) return 'med';
+  return 'low';
+}
+
+function getLevelClass(niveau) {
+  const n = niveau.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (n.includes('critique')) return 'critique';
+  if (n.includes('urgente')) return 'urgente';
+  if (n.includes('elevee') || n.includes('élevée')) return 'elevee';
+  if (n.includes('moderee') || n.includes('modérée')) return 'moderee';
+  if (n.includes('importante')) return 'importante';
+  return 'moderee';
+}
+
+let currentFilter = 'tous';
+
+function renderActions(filter) {
+  currentFilter = filter || currentFilter;
+  const list = document.getElementById('actions-list');
+  let filtered = DATA.actions;
+
+  if (currentFilter === 'critique') filtered = DATA.actions.filter(a => a.criticite >= 20);
+  else if (currentFilter === 'elevee') filtered = DATA.actions.filter(a => a.criticite >= 15 && a.criticite < 20);
+  else if (currentFilter === 'moderee') filtered = DATA.actions.filter(a => a.criticite < 15);
+  else if (currentFilter === 'afaire') filtered = DATA.actions.filter(a => a.statut === 'A faire');
+  else if (currentFilter === 'encours') filtered = DATA.actions.filter(a => ['En cours','Commandé'].includes(a.statut));
+  else if (currentFilter === 'valide') filtered = DATA.actions.filter(a => ['Validé','Terminé'].includes(a.statut));
+
+  list.innerHTML = filtered.map(a => `
+    <div class="action-item ${getLevelClass(a.niveau)}" id="item-${a.id}">
+      <div class="action-header" onclick="toggleDetail('${a.id}')">
+        <span class="action-id">${a.id}</span>
+        <div class="action-titre">${a.titre}</div>
+        <div style="text-align:right;flex-shrink:0">
+          <div class="action-score ${getScoreClass(a.criticite)}">${a.criticite}/25</div>
+        </div>
+      </div>
+      <div class="action-meta">
+        <span class="badge ${getBadgeClass(a.niveau)}">${a.niveau}</span>
+        <span class="badge ${getStatutBadgeClass(a.statut)}">${a.statut}</span>
+        <span class="action-meta-item">👤 ${a.responsable}</span>
+        <span class="action-meta-item">📅 ${a.echeance}</span>
+        <span class="action-meta-item">📍 ${a.zone}</span>
+      </div>
+      <div class="detail-panel" id="detail-${a.id}">
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <div>
+            <label style="font-size:11px;color:var(--gray);display:block;margin-bottom:4px">Statut</label>
+            <select class="statut-select" onchange="updateStatut('${a.id}', this.value)">
+              ${STATUTS.map(s => `<option value="${s}" ${s === a.statut ? 'selected' : ''}>${s}</option>`).join('')}
+            </select>
+          </div>
+          <div style="flex:1;min-width:200px">
+            <label style="font-size:11px;color:var(--gray);display:block;margin-bottom:4px">Note terrain (optionnel)</label>
+            <input type="text" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:13px;font-family:'DM Sans',sans-serif;padding:8px 12px;outline:none" placeholder="Ex: Devis reçu, réparation prévue le..." value="${a.note}" onchange="updateNote('${a.id}', this.value)" />
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Stats
+  const total = DATA.actions.length;
+  const done = DATA.actions.filter(a => ['Terminé','Validé'].includes(a.statut)).length;
+  const crit = DATA.actions.filter(a => a.criticite >= 20 && !['Terminé','Validé'].includes(a.statut)).length;
+  document.getElementById('actions-stats-row').innerHTML = `
+    <div class="grid-3" style="margin-bottom:20px">
+      <div style="background:rgba(229,57,53,0.1);border:1px solid rgba(229,57,53,0.25);border-radius:12px;padding:16px;text-align:center">
+        <div style="font-size:26px;font-family:'Syne',sans-serif;font-weight:700;color:#FF7070">${crit}</div>
+        <div style="font-size:11px;color:var(--gray);margin-top:4px">Actions critiques restantes</div>
+      </div>
+      <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:12px;padding:16px;text-align:center">
+        <div style="font-size:26px;font-family:'Syne',sans-serif;font-weight:700;color:#6EE7B7">${done}/${total}</div>
+        <div style="font-size:11px;color:var(--gray);margin-top:4px">Actions terminées / validées</div>
+      </div>
+      <div style="background:rgba(14,165,160,0.1);border:1px solid rgba(14,165,160,0.2);border-radius:12px;padding:16px;text-align:center">
+        <div style="font-size:26px;font-family:'Syne',sans-serif;font-weight:700;color:var(--teal-light)">${Math.round(done/total*100)}%</div>
+        <div style="font-size:11px;color:var(--gray);margin-top:4px">Taux d'avancement global</div>
+      </div>
+    </div>
+  `;
+}
+
+function toggleDetail(id) {
+  const panel = document.getElementById(`detail-${id}`);
+  panel.classList.toggle('open');
+}
+
+function updateStatut(id, val) {
+  const a = DATA.actions.find(x => x.id === id);
+  if (a) { a.statut = val; saveState(); renderDashboardSummary(); showToast('Statut mis à jour — ' + id); }
+}
+
+function updateNote(id, val) {
+  const a = DATA.actions.find(x => x.id === id);
+  if (a) { a.note = val; saveState(); showToast('Note enregistrée'); }
+}
+
+function filterActions(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderActions(f);
+}
+
+// ════════════════════════════════════════════════
+// RENDU — PIÈCES MANQUANTES
+// ════════════════════════════════════════════════
+
+function renderPieces() {
+  document.getElementById('pieces-list').innerHTML = DATA.pieces.map(p => `
+    <div class="piece-card ${p.urgence}">
+      <div class="piece-header">
+        <div>
+          <div class="piece-id">${p.id}</div>
+          <div class="piece-titre">${p.titre}</div>
+        </div>
+        <span class="badge ${p.urgence === 'bloquant' ? 'badge-critique' : p.urgence === 'attente' ? 'badge-attente' : p.urgence === 'partiel' ? 'badge-moderee' : 'badge-encours'}">${p.statut}</span>
+      </div>
+      <div class="piece-detail">${p.detail}</div>
+      <div class="piece-footer">
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <span class="piece-meta">📅 ${p.delai}</span>
+          <span class="piece-meta">👤 ${p.responsable}</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select class="statut-select" style="max-width:160px;font-size:12px;padding:6px 10px" onchange="updatePieceStatut('${p.id}', this.value)">
+            ${STATUTS_PIECES.map(s => `<option value="${s}" ${s === p.statut ? 'selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updatePieceStatut(id, val) {
+  const p = DATA.pieces.find(x => x.id === id);
+  if (p) { p.statut = val; saveState(); renderDashboardSummary(); showToast('Statut mis à jour — ' + id); }
+}
+
+// ════════════════════════════════════════════════
+// RENDU — DOCUMENTS
+// ════════════════════════════════════════════════
+
+function renderDocuments() {
+  const statutColors = {
+    'VALIDE': '#6EE7B7', 'EN ATTENTE SIGNATURE': '#C4B5FD', 'MANQUANT': '#FF7070',
+    'OBSOLÈTE': '#6B7280', 'DOUBLON': '#6B7280', 'PARTIEL': '#FCD34D',
+    'EN ATTENTE': '#93C5FD', 'VERSION': '#6B7280', 'EN COURS': '#FCD34D'
+  };
+
+  document.getElementById('doc-tbody').innerHTML = DATA.documents.map(d => {
+    const color = statutColors[d.statut] || '#6B7280';
+    return `
+      <tr>
+        <td><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--teal)">${d.id}</span></td>
+        <td style="color:#fff;font-weight:500">${d.nom}</td>
+        <td style="color:var(--gray)">${d.cat}</td>
+        <td><span style="font-size:11px;font-weight:700;color:${color}">${d.statut}</span></td>
+        <td style="color:var(--gray);font-family:'DM Mono',monospace;font-size:12px">${d.date}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════
+// RENDU — ZONES
+// ════════════════════════════════════════════════
+
+function renderZones() {
+  ['sud','nord'].forEach(z => {
+    document.getElementById(`zone-${z}`).innerHTML = DATA.zones[z].map(zone => `
+      <div class="zone-card">
+        <div class="zone-dot ${zone.couleur}"></div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#fff">${zone.nom}</div>
+          <div style="font-size:11px;font-weight:700;color:var(--${zone.couleur === 'green' ? 'green' : zone.couleur === 'red' ? 'red' : zone.couleur === 'blue' ? 'blue' : 'orange'});margin:3px 0">${zone.statut}</div>
+          <div style="font-size:11px;color:var(--gray);line-height:1.4">${zone.eq}</div>
+        </div>
+      </div>
+    `).join('');
+  });
+}
+
+// ════════════════════════════════════════════════
+// EMAILS
+// ════════════════════════════════════════════════
+
+const actionsTodo = () => DATA.actions.filter(a => a.statut === 'A faire' && a.criticite >= 15).map(a => `• ${a.id} — ${a.titre} (${a.echeance})`).join('\n');
+
+const EMAIL_TEMPLATES = {
+  'loris-urgent': {
+    dest: 'Loris CARDARELLI <loris@koaland.fr>',
+    objet: '[URGENT — KOALAND] Actions sécurité A02–A06 — Chaises Volantes — À traiter cette semaine',
+    corps: `Bonjour Loris,
+
+Je fais suite à l'audit CEEV réalisé sur les Chaises Volantes. Les 5 points ci-dessous doivent être traités avant le 27/02/2026, sans exception.
+
+Actions à réaliser en priorité :
+• A02 — Anti-arrachement charnière store
+• A03 — Clapets anti-retour vérins hydrauliques
+• A04 — Différentiel 30mA + mise à la terre électrique
+• A05 — Protection tubes néons (vibrations / projectiles)
+• A06 — Blocs de secours type Lumen (panne électrique)
+
+Pour chaque action réalisée : merci de me confirmer par retour de mail et de prendre une photo de preuve.
+
+Ces 5 points conditionnent directement la conformité NF EN 13814 des manèges. Un défaut constaté lors d'un contrôle serait bloquant pour l'ouverture.
+
+Reviens-moi au plus vite si tu as un blocage sur l'une de ces actions.
+
+Bien à toi,
+David MUSEUR
+Expert Sécurité — Cabinet SECURE
+07.88.96.55.28 | David.museur@riskattitude.net
+"Cultiver la résilience, sécuriser l'avenir"`
+  },
+  'loris-hebdo': {
+    dest: 'Loris CARDARELLI <loris@koaland.fr>',
+    objet: '[KOALAND] Point hebdomadaire sécurité — Statuts actions',
+    corps: `Bonjour Loris,
+
+Voici le point hebdomadaire sur l'avancement des actions de sécurité pour le Parc KOALAND.
+
+Pourrais-tu me confirmer le statut actuel des actions dont tu es responsable ?
+
+Actions en cours pour Loris CARDARELLI :
+${DATA.actions.filter(a => a.responsable === 'L. CARDARELLI').map(a => `• ${a.id} — ${a.titre}\n  Statut actuel : ${a.statut} — Échéance : ${a.echeance}${a.note ? '\n  Note : ' + a.note : ''}`).join('\n\n')}
+
+Pour chaque action : merci de me confirmer "Fait" ou "En cours" avec une estimation de date si elle n'est pas terminée.
+
+Bonne semaine,
+David MUSEUR
+Expert Sécurité — Cabinet SECURE
+07.88.96.55.28`
+  },
+  'loris-photo': {
+    dest: 'Loris CARDARELLI <loris@koaland.fr>',
+    objet: '[KOALAND] Demande photos de preuve — Actions réalisées',
+    corps: `Bonjour Loris,
+
+Pour compléter le dossier de conformité ERP de KOALAND, j'ai besoin de photos de preuve pour les actions que tu as réalisées.
+
+Merci de m'envoyer des photos pour chaque action terminée :
+• Vue d'ensemble de la zone concernée
+• Détail de la réparation / installation / mise en conformité
+• Plaque ou référence du matériel si applicable
+
+Tu peux me répondre directement à cet email avec les photos en pièce jointe, ou m'envoyer un lien WeTransfer si c'est plus simple.
+
+Ces photos alimenteront directement le rapport de conformité final transmis à la mairie de Menton.
+
+Merci d'avance,
+David MUSEUR — Cabinet SECURE
+07.88.96.55.28`
+  },
+  'john-cerfa': {
+    dest: 'John NAISSE <john@koaland.fr>',
+    objet: '🚨 [BLOQUANT — KOALAND] CERFA 13824*04 — Signature requise immédiatement',
+    corps: `Bonjour John,
+
+Le CERFA 13824*04 est le formulaire officiel de déclaration ERP auprès de la mairie de Menton. Le dossier est complet et prêt — il manque uniquement ta signature en tant que représentant légal de SAS PARC KOALAND.
+
+Sans ce CERFA signé, le parc ne peut légalement pas ouvrir ses portes.
+
+Ce document est identifié comme BLOQUANT depuis le 13/02/2026 (J+0).
+
+Ce que je te demande :
+1. Signer le CERFA 13824*04 (draft disponible — je peux te le renvoyer)
+2. Me retourner le document signé par email ou scan
+3. Je me charge du dépôt auprès de Mme MANAIGO (Mairie — Service Urbanisme)
+
+Merci de traiter ce point aujourd'hui ou au plus tard demain matin.
+
+David MUSEUR
+Expert Sécurité — Cabinet SECURE
+07.88.96.55.28 | David.museur@riskattitude.net`
+  },
+  'john-assurance': {
+    dest: 'John NAISSE <john@koaland.fr>',
+    objet: '[BLOQUANT — KOALAND] Attestations d\'assurance manquantes — Art. 16 Convention Mairie',
+    corps: `Bonjour John,
+
+L'article 16 de la convention d'occupation signée avec la mairie de Menton exige la fourniture d'attestations d'assurance avant toute ouverture au public.
+
+Documents requis (PM-3) :
+• Attestation RC Exploitation (responsabilité civile)
+• Attestation Multirisque
+• Clause de renonciation à recours contre la commune
+
+Statut actuel : PARTIEL — certaines pièces semblent disponibles mais le dossier n'est pas complet.
+
+Action requise :
+Merci de contacter ton assureur et de me faire parvenir les 3 attestations au format PDF dans les meilleurs délais. Ce point est bloquant pour le dépôt du dossier ERP complet.
+
+David MUSEUR — Cabinet SECURE
+07.88.96.55.28`
+  },
+  'john-audit': {
+    dest: 'John NAISSE <john@koaland.fr>',
+    objet: '[CRITIQUE — KOALAND] Audit électrique Q18 — Commander APAVE ou SOCOTEC — Délai dépassé',
+    corps: `Bonjour John,
+
+L'action A14 concernant l'audit électrique Q18 était prévue pour le 24/02/2026. Le délai est dépassé et aucune confirmation de commande n'a été reçue.
+
+Pourquoi c'est critique :
+• Un établissement ERP ouvert au public sans vérification électrique Q18 engage directement la responsabilité pénale du responsable légal.
+• En cas d'incident électrique, l'absence de ce rapport annulerait toute couverture assurantielle.
+
+Ce que je te demande :
+1. Contacter APAVE ou SOCOTEC — Agence de Menton
+2. Commander la vérification Q18 pour une intervention la semaine prochaine
+3. Me confirmer la date d'intervention
+
+Je reste disponible pour t'aider à formuler la demande si nécessaire.
+
+David MUSEUR — Cabinet SECURE
+07.88.96.55.28`
+  },
+  'rapport': {
+    dest: 'David MUSEUR <David.museur@riskattitude.net>',
+    objet: '[KOALAND] Rapport de suivi — ' + new Date().toLocaleDateString('fr-FR'),
+    corps: () => {
+      const done = DATA.actions.filter(a => ['Terminé','Validé'].includes(a.statut));
+      const inProgress = DATA.actions.filter(a => ['En cours','Commandé'].includes(a.statut));
+      const todo = DATA.actions.filter(a => a.statut === 'A faire');
+      const blocking = DATA.pieces.filter(p => p.urgence === 'bloquant' && !['Reçu','Validé'].includes(p.statut));
+
+      return `Bonjour David,
+
+Voici le rapport de suivi du Plan d'action KOALAND au ${new Date().toLocaleDateString('fr-FR')}.
+
+═══ SYNTHÈSE ACTIONS ═══
+• Terminées / Validées : ${done.length}/20
+• En cours / Commandées : ${inProgress.length}
+• À faire : ${todo.length}
+
+═══ ACTIONS TERMINÉES ═══
+${done.length ? done.map(a => `✅ ${a.id} — ${a.titre}${a.note ? '\n   Note : ' + a.note : ''}`).join('\n') : 'Aucune action terminée pour le moment.'}
+
+═══ ACTIONS EN COURS ═══
+${inProgress.length ? inProgress.map(a => `🔄 ${a.id} — ${a.titre}${a.note ? '\n   Note : ' + a.note : ''}`).join('\n') : 'Aucune.'}
+
+═══ PIÈCES BLOQUANTES ═══
+${blocking.length ? blocking.map(p => `🔴 ${p.id} — ${p.titre} (${p.statut})`).join('\n') : '✅ Aucune pièce bloquante restante.'}
+
+Ce rapport a été généré depuis le portail KOALAND Sécurité 2026.
+
+Loris CARDARELLI
+Responsable de Site — Parc KOALAND Menton`;
+    }
+  }
+};
+
+function openEmailModal(type) {
+  const tpl = EMAIL_TEMPLATES[type];
+  if (!tpl) return;
+
+  const corps = typeof tpl.corps === 'function' ? tpl.corps() : tpl.corps;
+
+  document.getElementById('modal-title').textContent = '✉️ Email pré-rempli';
+  document.getElementById('modal-dest').textContent = tpl.dest;
+  document.getElementById('modal-objet').textContent = tpl.objet;
+  document.getElementById('modal-body').textContent = corps;
+
+  const emailAddr = tpl.dest.match(/<(.+)>/)?.[1] || '';
+  document.getElementById('modal-mailto').href = `mailto:${emailAddr}?subject=${encodeURIComponent(tpl.objet)}&body=${encodeURIComponent(corps)}`;
+
+  document.getElementById('email-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('email-modal').classList.remove('open');
+}
+
+function copyEmail() {
+  const objet = document.getElementById('modal-objet').textContent;
+  const corps = document.getElementById('modal-body').textContent;
+  navigator.clipboard.writeText(`OBJET : ${objet}\n\n${corps}`).then(() => showToast('Email copié dans le presse-papiers'));
+}
+
+// ════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════
+
+function showPage(name, navEl) {
+  document.querySelectorAll('[id^="page-"]').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).style.display = 'block';
+  if (navEl) navEl.classList.add('active');
+
+  if (name === 'actions') renderActions();
+  if (name === 'pieces') renderPieces();
+  if (name === 'documents') renderDocuments();
+  if (name === 'zones') renderZones();
+
+  // Close sidebar on mobile
+  if (window.innerWidth <= 900) {
+    document.getElementById('sidebar').classList.remove('open');
+  }
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// ════════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════════
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Close modal on overlay click
+document.getElementById('email-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════
+
+loadState();
+renderDashboardSummary();
+</script>
+</body>
+</html>
