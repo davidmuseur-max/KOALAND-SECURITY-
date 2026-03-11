@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOALAND — Portail Sécurité 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0B1E35;
+  --navy2: #112644;
+  --navy3: #1a3357;
+  --teal: #0D9488;
+  --teal2: #14B8A6;
+  --gold: #E8B84B;
+  --red: #EF4444;
+  --orange: #F97316;
+  --green: #10B981;
+  --purple: #8B5CF6;
+  --slate: #94A3B8;
+  --text: #E2EBF5;
+  --text2: #94A3B8;
+  --card: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.12);
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; background:var(--navy); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; overflow:hidden; }
+
+/* ── LAYOUT ── */
+#app { display:flex; height:100vh; }
+
+/* ── SIDEBAR ── */
+#sidebar {
+  width:220px; min-width:220px; background:var(--navy2);
+  border-right:1px solid var(--border);
+  display:flex; flex-direction:column;
+  padding:0; overflow:hidden;
+}
+.sb-logo {
+  padding:24px 20px 16px;
+  border-bottom:1px solid var(--border);
+}
+.sb-logo-name {
+  font-size:20px; font-weight:700; letter-spacing:0.08em;
+  color:#fff; line-height:1;
+}
+.sb-logo-name span { color:var(--teal2); }
+.sb-logo-sub { font-size:10px; color:var(--text2); margin-top:4px; text-transform:uppercase; letter-spacing:0.12em; }
+.sb-nav { flex:1; padding:12px 0; overflow-y:auto; }
+.sb-section { font-size:10px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.1em; padding:8px 20px 4px; }
+.sb-item {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 20px; cursor:pointer; font-size:13px; font-weight:500;
+  color:var(--text2); transition:all 0.15s; border-left:3px solid transparent;
+}
+.sb-item:hover { background:rgba(255,255,255,0.05); color:var(--text); }
+.sb-item.active { background:rgba(13,148,136,0.15); color:var(--teal2); border-left-color:var(--teal2); }
+.sb-item .icon { font-size:16px; width:20px; text-align:center; }
+.sb-badge {
+  margin-left:auto; font-size:10px; font-weight:700;
+  padding:2px 7px; border-radius:20px;
+  background:rgba(239,68,68,0.2); color:#FCA5A5;
+}
+.sb-badge.green { background:rgba(16,185,129,0.2); color:#6EE7B7; }
+.sb-badge.gold { background:rgba(232,184,75,0.2); color:var(--gold); }
+.sb-footer {
+  padding:14px 20px; border-top:1px solid var(--border);
+  font-size:11px; color:var(--text2); line-height:1.6;
+}
+.sb-footer strong { color:var(--text); display:block; }
+
+/* ── MAIN ── */
+#main { flex:1; overflow-y:auto; background:var(--navy); }
+.page { display:none; padding:32px; min-height:100%; }
+.page.active { display:block; }
+
+/* ── TOP BAR ── */
+.topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:28px;
+}
+.topbar-title { font-size:22px; font-weight:700; color:#fff; }
+.topbar-sub { font-size:13px; color:var(--text2); margin-top:2px; }
+.topbar-right { display:flex; gap:8px; align-items:center; }
+
+/* ── STAT CARDS ── */
+.stat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+.stat-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:12px; padding:18px 20px;
+  position:relative; overflow:hidden;
+}
+.stat-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+}
+.stat-card.red::before { background:var(--red); }
+.stat-card.green::before { background:var(--green); }
+.stat-card.gold::before { background:var(--gold); }
+.stat-card.teal::before { background:var(--teal2); }
+.stat-card.purple::before { background:var(--purple); }
+.stat-num { font-size:32px; font-weight:700; line-height:1; margin-bottom:4px; }
+.stat-card.red .stat-num { color:var(--red); }
+.stat-card.green .stat-num { color:var(--green); }
+.stat-card.gold .stat-num { color:var(--gold); }
+.stat-card.teal .stat-num { color:var(--teal2); }
+.stat-card.purple .stat-num { color:var(--purple); }
+.stat-label { font-size:12px; color:var(--text2); font-weight:500; }
+.stat-icon { position:absolute; right:16px; top:16px; font-size:22px; opacity:0.3; }
+
+/* ── CARDS ── */
+.card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:12px; margin-bottom:16px;
+}
+.card-head {
+  padding:14px 20px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:8px;
+  font-size:13px; font-weight:700; color:#fff;
+}
+.card-head .ch-icon { font-size:16px; }
+.card-body { padding:20px; }
+
+/* ── PROGRESS ── */
+.prog-bar { height:6px; background:rgba(255,255,255,0.08); border-radius:4px; overflow:hidden; margin-top:6px; }
+.prog-fill { height:100%; border-radius:4px; transition:width 0.6s ease; }
+
+/* ── TABLES ── */
+.tbl { width:100%; border-collapse:collapse; font-size:13px; }
+.tbl th {
+  text-align:left; padding:10px 14px; font-size:11px; font-weight:700;
+  text-transform:uppercase; letter-spacing:0.08em; color:var(--text2);
+  border-bottom:1px solid var(--border);
+}
+.tbl td { padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.04); vertical-align:middle; }
+.tbl tr:last-child td { border-bottom:none; }
+.tbl tr:hover td { background:rgba(255,255,255,0.03); }
+
+/* ── BADGES ── */
+.badge {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:3px 9px; border-radius:20px; font-size:11px; font-weight:700;
+  white-space:nowrap;
+}
+.badge.red { background:rgba(239,68,68,0.15); color:#FCA5A5; }
+.badge.green { background:rgba(16,185,129,0.15); color:#6EE7B7; }
+.badge.gold { background:rgba(232,184,75,0.15); color:var(--gold); }
+.badge.blue { background:rgba(59,130,246,0.15); color:#93C5FD; }
+.badge.orange { background:rgba(249,115,22,0.15); color:#FDB68A; }
+.badge.purple { background:rgba(139,92,246,0.15); color:#C4B5FD; }
+.badge.teal { background:rgba(13,148,136,0.15); color:var(--teal2); }
+.badge.gray { background:rgba(255,255,255,0.08); color:var(--text2); }
+
+/* ── ACTION ROWS ── */
+.action-row {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.action-row:last-child { border-bottom:none; }
+.action-id {
+  font-family:'DM Mono',monospace; font-size:11px; font-weight:500;
+  color:var(--text2); background:rgba(255,255,255,0.06);
+  padding:3px 8px; border-radius:6px; white-space:nowrap; margin-top:2px;
+}
+.action-content { flex:1; }
+.action-title { font-size:13px; font-weight:600; color:#fff; margin-bottom:3px; }
+.action-meta { font-size:12px; color:var(--text2); display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.action-check {
+  width:22px; height:22px; border-radius:6px; cursor:pointer; flex-shrink:0;
+  border:2px solid rgba(255,255,255,0.2); background:transparent;
+  display:flex; align-items:center; justify-content:center; margin-top:2px;
+  transition:all 0.15s;
+}
+.action-check.done { background:var(--green); border-color:var(--green); }
+.action-check.done::after { content:'✓'; font-size:12px; color:#fff; font-weight:700; }
+
+/* ── PHOTO GRID ── */
+.photo-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; }
+.photo-card {
+  border-radius:10px; overflow:hidden; background:var(--navy3);
+  border:1px solid var(--border); cursor:pointer; transition:transform 0.15s;
+}
+.photo-card:hover { transform:scale(1.02); border-color:var(--teal); }
+.photo-card img { width:100%; height:140px; object-fit:cover; display:block; }
+.photo-card .ph-info { padding:8px 10px; }
+.photo-card .ph-label { font-size:12px; font-weight:600; color:#fff; }
+.photo-card .ph-date { font-size:11px; color:var(--text2); margin-top:2px; }
+.photo-card .ph-tag { margin-top:6px; }
+
+/* ── LIGHTBOX ── */
+#lightbox {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92);
+  z-index:1000; align-items:center; justify-content:center; flex-direction:column; gap:16px;
+}
+#lightbox.open { display:flex; }
+#lightbox img { max-width:85vw; max-height:75vh; border-radius:8px; object-fit:contain; }
+#lightbox .lb-caption { color:var(--text); font-size:14px; text-align:center; }
+#lightbox .lb-close {
+  position:absolute; top:20px; right:24px; font-size:28px; cursor:pointer;
+  color:rgba(255,255,255,0.6); line-height:1;
+}
+#lightbox .lb-close:hover { color:#fff; }
+
+/* ── DOC LIST ── */
+.doc-item {
+  display:flex; align-items:center; gap:12px;
+  padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.doc-item:last-child { border-bottom:none; }
+.doc-icon { font-size:22px; flex-shrink:0; }
+.doc-name { font-size:13px; font-weight:600; color:#fff; }
+.doc-desc { font-size:12px; color:var(--text2); margin-top:1px; }
+.doc-status { margin-left:auto; }
+
+/* ── QUESTIONNAIRE ── */
+.q-section-title {
+  font-size:13px; font-weight:700; color:var(--teal2); text-transform:uppercase;
+  letter-spacing:0.08em; margin:20px 0 10px; padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.q-item {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.03);
+}
+.q-item:last-child { border-bottom:none; }
+.q-text { flex:1; font-size:13px; color:var(--text); line-height:1.5; }
+.q-btns { display:flex; gap:6px; flex-shrink:0; margin-top:2px; }
+.q-btn {
+  padding:4px 10px; border-radius:6px; border:1px solid var(--border2);
+  background:transparent; color:var(--text2); font-size:11px; font-weight:700;
+  cursor:pointer; font-family:inherit; transition:all 0.15s;
+}
+.q-btn:hover { border-color:rgba(255,255,255,0.3); color:#fff; }
+.q-btn.selected-ok { background:rgba(16,185,129,0.2); border-color:var(--green); color:#6EE7B7; }
+.q-btn.selected-no { background:rgba(239,68,68,0.2); border-color:var(--red); color:#FCA5A5; }
+.q-btn.selected-partial { background:rgba(249,115,22,0.2); border-color:var(--orange); color:#FDB68A; }
+.q-btn.selected-na { background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.2); color:var(--text2); }
+
+/* ── ALERT ── */
+.alert {
+  display:flex; gap:12px; padding:14px 16px; border-radius:10px;
+  border-left:3px solid; margin-bottom:14px; font-size:13px;
+}
+.alert.red { background:rgba(239,68,68,0.08); border-color:var(--red); color:#FCA5A5; }
+.alert.gold { background:rgba(232,184,75,0.08); border-color:var(--gold); color:var(--gold); }
+.alert.green { background:rgba(16,185,129,0.08); border-color:var(--green); color:#6EE7B7; }
+.alert.teal { background:rgba(13,148,136,0.08); border-color:var(--teal2); color:var(--teal2); }
+
+/* ── BTN ── */
+.btn {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:9px 18px; border-radius:8px; border:none; cursor:pointer;
+  font-size:13px; font-weight:700; font-family:inherit; transition:all 0.15s;
+}
+.btn-teal { background:var(--teal); color:#fff; }
+.btn-teal:hover { background:var(--teal2); }
+.btn-ghost { background:rgba(255,255,255,0.07); color:var(--text); border:1px solid var(--border2); }
+.btn-ghost:hover { background:rgba(255,255,255,0.12); }
+.btn-red { background:rgba(239,68,68,0.15); color:#FCA5A5; border:1px solid rgba(239,68,68,0.3); }
+
+
+
+/* ── SAVE INDICATOR ── */
+#save-dot {
+  position:fixed; bottom:20px; right:20px; background:var(--navy2);
+  border:1px solid var(--border); border-radius:20px;
+  padding:6px 14px; font-size:12px; color:var(--text2);
+  display:flex; align-items:center; gap:6px; opacity:0; transition:opacity 0.3s;
+  z-index:100;
+}
+#save-dot .dot { width:6px; height:6px; border-radius:50%; background:var(--green); }
+#save-dot.visible { opacity:1; }
+
+/* ── MAP EMBED ── */
+.map-wrap { border-radius:10px; overflow:hidden; border:1px solid var(--border); height:320px; }
+.map-wrap iframe { width:100%; height:100%; border:none; display:block; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  #sidebar { display:none; }
+  .stat-grid { grid-template-columns:repeat(2,1fr); }
+  .page { padding:16px; }
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:3px; }
+</style>
+</head>
+<body>
+
+<!-- SAVE INDICATOR -->
+<div id="save-dot"><div class="dot"></div>Sauvegardé</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox()">
+  <div class="lb-close" onclick="closeLightbox()">✕</div>
+  <img id="lb-img" src="" alt="">
+  <div class="lb-caption" id="lb-caption"></div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-name">KOA<span>LAND</span></div>
+    <div class="sb-logo-sub">Portail Sécurité 2026</div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">Général</div>
+    <div class="sb-item active" onclick="nav('dashboard')"><span class="icon">🏠</span>Tableau de bord</div>
+    <div class="sb-item" onclick="nav('actions')"><span class="icon">⚡</span>Plan d'actions<span class="sb-badge" id="badge-actions">22</span></div>
+    <div class="sb-section">DUERP</div>
+    <div class="sb-item" onclick="nav('duerp')"><span class="icon">📋</span>Document Unique</div>
+    <div class="sb-item" onclick="nav('questionnaire')"><span class="icon">✅</span>Questionnaire terrain</div>
+    <div class="sb-section">Dossier</div>
+    <div class="sb-item" onclick="nav('photos')"><span class="icon">📸</span>Photos terrain</div>
+    <div class="sb-item" onclick="nav('documents')"><span class="icon">📁</span>Documents<span class="sb-badge red" id="badge-docs">6</span></div>
+    <div class="sb-item" onclick="nav('carte')"><span class="icon">📍</span>Plan du parc</div>
+  </nav>
+  <div class="sb-footer">
+    <strong>David Museur — SECURE</strong>
+    david.museur@riskattitude.net<br>
+    07.88.96.55.28
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+<!-- ═══ DASHBOARD ═══ -->
+<div id="page-dashboard" class="page active">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Tableau de bord</div>
+      <div class="topbar-sub">SAS PARC KOALAND · 5 Avenue de la Madone · Menton 06500 · ERP Type PA 5ème cat.</div>
+    </div>
+    <div class="topbar-right">
+      <span class="badge gold">⚡ Actif</span>
+      <span class="badge teal">Mars 2026</span>
+    </div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card red">
+      <div class="stat-num" id="stat-urgences">5</div>
+      <div class="stat-label">Actions urgentes J+7</div>
+      <div class="stat-icon">🔴</div>
+    </div>
+    <div class="stat-card gold">
+      <div class="stat-num" id="stat-encours">17</div>
+      <div class="stat-label">Actions en cours</div>
+      <div class="stat-icon">⏳</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-num" id="stat-done">0</div>
+      <div class="stat-label">Actions réalisées</div>
+      <div class="stat-icon">✅</div>
+    </div>
+    <div class="stat-card teal">
+      <div class="stat-num">6</div>
+      <div class="stat-label">Pièces manquantes</div>
+      <div class="stat-icon">📄</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div>
+      <div class="card">
+        <div class="card-head"><span class="ch-icon">⚠️</span>Actions urgentes — J+7</div>
+        <div class="card-body">
+          <div class="alert red">🚨 5 actions critiques à réaliser avant le 18 mars 2026</div>
+          <table class="tbl">
+            <tr><th>ID</th><th>Action</th><th>Resp.</th></tr>
+            <tr><td><span class="badge red">A01</span></td><td>Séparation produits chimiques/aliments — local dédié verrouillé</td><td>Loris</td></tr>
+            <tr><td><span class="badge red">A02</span></td><td>Obtenir FDS produits chimiques (Quasar + dégraissants)</td><td>Loris</td></tr>
+            <tr><td><span class="badge red">A03</span></td><td>Levée réserves Chaise Volante — 12 points CEEV</td><td>John</td></tr>
+            <tr><td><span class="badge red">A04</span></td><td>Rapport Q18 QUALICONSULT → transmettre Mairie dès réception</td><td>Loris</td></tr>
+            <tr><td><span class="badge red">A05</span></td><td>Étiquettes extincteurs N°9 et N°14 : Classe D → Classe ABC</td><td>Loris</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="ch-icon">📊</span>Avancement global</div>
+        <div class="card-body">
+          <div style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span style="font-size:12px;color:var(--text2);">Plan d'actions (22 actions)</span>
+              <span id="prog-pct" style="font-size:12px;color:var(--teal2);font-weight:700;">0%</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%;background:var(--teal2);"></div></div>
+          </div>
+          <div style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span style="font-size:12px;color:var(--text2);">Questionnaire terrain</span>
+              <span id="quest-pct" style="font-size:12px;color:var(--gold);font-weight:700;">0%</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill" id="quest-fill" style="width:0%;background:var(--gold);"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span style="font-size:12px;color:var(--text2);">Documents collectés</span>
+              <span style="font-size:12px;color:var(--orange);font-weight:700;">5/11 (45%)</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill" style="width:45%;background:var(--orange);"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-head"><span class="ch-icon">🏭</span>Informations établissement</div>
+        <div class="card-body" style="font-size:13px;line-height:2;">
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 14px;">
+            <span style="color:var(--text2);">Raison sociale</span><strong>SAS PARC KOALAND</strong>
+            <span style="color:var(--text2);">SIRET</span><span style="font-family:'DM Mono',monospace;font-size:12px;">792 470 627 00011</span>
+            <span style="color:var(--text2);">Adresse</span><span>5 Avenue de la Madone, 06500 Menton</span>
+            <span style="color:var(--text2);">Gérant</span><strong>John NAISSE</strong>
+            <span style="color:var(--text2);">Directeur site</span><span>Loris CARDARELLI</span>
+            <span style="color:var(--text2);">Effectif</span><span>18 pers. (4 CDI · 6 CDD · 8 saisonniers)</span>
+            <span style="color:var(--text2);">ERP</span><span>Type PA — 5ème catégorie — 299 pers. max</span>
+            <span style="color:var(--text2);">NAF</span><span>9321Z — Gestion de parcs d'attractions</span>
+            <span style="color:var(--text2);">Conv. collective</span><span>IDCC 1790 — Espaces de loisirs</span>
+            <span style="color:var(--text2);">AOT Mairie</span><span>Convention n°409/25 — 10 ans</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="ch-icon">🎡</span>Attractions du parc</div>
+        <div class="card-body">
+          <table class="tbl">
+            <tr><th>Attraction</th><th>État CEEV</th></tr>
+            <tr><td>🎡 Chaise Volante</td><td><span class="badge gold">12 réserves J+7</span></td></tr>
+            <tr><td>🎠 Carrousel</td><td><span class="badge orange">12 réserves J+14</span></td></tr>
+            <tr><td>🎪 Trampolines</td><td><span class="badge green">Conforme</span></td></tr>
+            <tr><td>🐟 Pêche aux Canards</td><td><span class="badge blue">1 réserve J+30</span></td></tr>
+            <tr><td>🏗️ Gonflables</td><td><span class="badge gray">À vérifier</span></td></tr>
+            <tr><td>🐛 Chenille</td><td><span class="badge gray">À vérifier</span></td></tr>
+            <tr><td>💪 Zone Fitness</td><td><span class="badge gray">À vérifier</span></td></tr>
+            <tr><td>🍽️ Restauration</td><td><span class="badge red">Chimique J+7</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ACTIONS ═══ -->
+<div id="page-actions" class="page">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Plan d'actions DUERP</div>
+      <div class="topbar-sub">22 actions correctives · Cliquez sur ✓ pour marquer comme réalisé</div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost" onclick="exportActions()">⬇ Export CSV</button>
+    </div>
+  </div>
+
+  <div class="alert red">🔴 <strong>5 actions J+7</strong> — Délai : 18 mars 2026</div>
+  <div class="alert gold">🟡 <strong>8 actions J+30</strong> — Délai : 11 avril 2026</div>
+  <div class="alert teal">🔵 <strong>9 actions J+60 à J+180</strong> — Suivi continu</div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-head"><span class="ch-icon">🔴</span>Urgences — J+7 (avant le 18 mars 2026)</div>
+    <div class="card-body" id="actions-j7"></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">🟠</span>Court terme — J+30 (avant le 11 avril 2026)</div>
+    <div class="card-body" id="actions-j30"></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">🔵</span>Moyen terme — J+60 à J+180</div>
+    <div class="card-body" id="actions-long"></div>
+  </div>
+</div>
+
+<!-- ═══ DUERP ═══ -->
+<div id="page-duerp" class="page">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Document Unique d'Évaluation des Risques</div>
+      <div class="topbar-sub">DUERP V7 · Mars 2026 · SAS PARC KOALAND · Méthode G×P</div>
+    </div>
+    <div class="topbar-right">
+      <span class="badge gold">V7 — Mars 2026</span>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+    <div class="stat-card red"><div class="stat-num">5</div><div class="stat-label">Risques Critiques (IC≥9)</div></div>
+    <div class="stat-card gold"><div class="stat-num">8</div><div class="stat-label">Risques Importants (IC 6-8)</div></div>
+    <div class="stat-card teal"><div class="stat-num">6</div><div class="stat-label">Unités de Travail</div></div>
+    <div class="stat-card purple"><div class="stat-num">22</div><div class="stat-label">Mesures de prévention</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">📐</span>Méthode d'évaluation — Grille G×P</div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:8px;">Gravité (G)</div>
+          <table class="tbl">
+            <tr><td>G1</td><td>Incident sans arrêt</td></tr>
+            <tr><td>G2</td><td>Accident avec arrêt &lt;30j</td></tr>
+            <tr><td>G3</td><td>Accident grave / incapacité</td></tr>
+            <tr><td>G4</td><td>Décès / invalidité permanente</td></tr>
+          </table>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:8px;">Probabilité (P)</div>
+          <table class="tbl">
+            <tr><td>P1</td><td>Très improbable</td></tr>
+            <tr><td>P2</td><td>Improbable</td></tr>
+            <tr><td>P3</td><td>Probable</td></tr>
+            <tr><td>P4</td><td>Très probable</td></tr>
+          </table>
+        </div>
+      </div>
+      <div style="margin-top:14px;font-size:12px;color:var(--text2);">
+        Indice de criticité IC = G × P · 
+        <span class="badge red">IC ≥ 9 Critique</span>
+        <span class="badge gold" style="margin:0 4px;">IC 6-8 Important</span>
+        <span class="badge green">IC ≤ 5 Acceptable</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">⚠️</span>Top 5 — Risques critiques (IC ≥ 9)</div>
+    <div class="card-body">
+      <table class="tbl">
+        <tr><th>Famille de risque</th><th>Description</th><th>UT concernée</th><th>IC</th><th>Délai</th></tr>
+        <tr>
+          <td><span class="badge red">Chimique</span></td>
+          <td>Stockage produits Quasar avec denrées alimentaires — contamination croisée</td>
+          <td>UT5 Restauration</td>
+          <td><strong style="color:#FCA5A5;">12</strong></td>
+          <td><span class="badge red">J+7</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge orange">Thermique</span></td>
+          <td>Brûlures friteuse / huile bouillante — restauration</td>
+          <td>UT5 Restauration</td>
+          <td><strong style="color:var(--gold);">9</strong></td>
+          <td><span class="badge gold">J+30</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge red">Chimique</span></td>
+          <td>Absence de Fiches de Données Sécurité (FDS) accessibles</td>
+          <td>Toutes UT</td>
+          <td><strong style="color:var(--gold);">9</strong></td>
+          <td><span class="badge red">J+7</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge purple">RPS</span></td>
+          <td>Violence externe / agressions verbales accueil clientèle</td>
+          <td>UT4 Accueil</td>
+          <td><strong style="color:var(--gold);">9</strong></td>
+          <td><span class="badge gold">J+30</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge orange">Thermique</span></td>
+          <td>Canicule — opérateurs extérieurs sans protocole ni équipement</td>
+          <td>UT2 Opérateurs</td>
+          <td><strong style="color:var(--gold);">9</strong></td>
+          <td><span class="badge gold">J+30</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">🏢</span>Unités de Travail</div>
+    <div class="card-body">
+      <table class="tbl">
+        <tr><th>UT</th><th>Nom</th><th>Effectif</th><th>Risque principal</th></tr>
+        <tr><td><span class="badge teal">UT1</span></td><td>Direction / Administration</td><td>2 CDI</td><td>Stress, RPS</td></tr>
+        <tr><td><span class="badge teal">UT2</span></td><td>Opérateurs attractions</td><td>6 CDD/saisonniers</td><td>Mécanique, canicule, bruit</td></tr>
+        <tr><td><span class="badge teal">UT3</span></td><td>Maintenance / Technique</td><td>2 CDI</td><td>Chute hauteur, électrique, LOTO</td></tr>
+        <tr><td><span class="badge teal">UT4</span></td><td>Accueil / Relation client</td><td>4 saisonniers</td><td>RPS, violence externe, station debout</td></tr>
+        <tr><td><span class="badge teal">UT5</span></td><td>Restauration / Paillote</td><td>2 saisonniers</td><td>Chimique, thermique, électrique</td></tr>
+        <tr><td><span class="badge teal">UT6</span></td><td>Entretien / Nettoyage</td><td>2 saisonniers</td><td>Chimique, TMS, glissades</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">🔬</span>Inventaire complet des risques par famille</div>
+    <div class="card-body" id="risques-body"></div>
+  </div>
+</div>
+
+<!-- ═══ QUESTIONNAIRE ═══ -->
+<div id="page-questionnaire" class="page">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Questionnaire terrain</div>
+      <div class="topbar-sub">À compléter lors de chaque visite · Sauvegarde automatique toutes les 30 secondes</div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-teal" onclick="sendQuestionnaire()">📧 Envoyer résultats</button>
+      <button class="btn btn-ghost" onclick="resetQuestionnaire()">↺ Réinitialiser</button>
+    </div>
+  </div>
+  <div class="alert gold">⏳ Accès temporaire — Interface active uniquement pendant la mission DUERP — SECURE</div>
+  <div id="questionnaire-body" class="card"><div class="card-body" id="q-inner"></div></div>
+</div>
+
+<!-- ═══ PHOTOS ═══ -->
+<div id="page-photos" class="page">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Photos terrain</div>
+      <div class="topbar-sub">Constats visuels · Inspection du 11/02/2026 et 03/03/2026</div>
+    </div>
+  </div>
+  <div class="alert teal">📸 Cliquez sur une photo pour l'agrandir et voir l'analyse détaillée</div>
+  <div class="photo-grid" id="photo-grid"></div>
+</div>
+
+<!-- ═══ DOCUMENTS ═══ -->
+<div id="page-documents" class="page">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Documents & Pièces manquantes</div>
+      <div class="topbar-sub">Dossier réglementaire ERP · Suivi des pièces à fournir</div>
+    </div>
+  </div>
+
+  <div class="alert red">🔴 <strong>6 pièces critiques manquantes</strong> — Requis pour la Mairie de Menton</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="card">
+      <div class="card-head"><span class="ch-icon">🔴</span>Pièces manquantes critiques</div>
+      <div class="card-body">
+        <div class="doc-item">
+          <div class="doc-icon">⚡</div>
+          <div><div class="doc-name">Rapport Q18 — Vérification électrique</div><div class="doc-desc">QUALICONSULT · Prévu 05/03/2026 · Indispensable pour Mairie</div></div>
+          <div class="doc-status"><span class="badge red">Attendu</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon">🛡️</div>
+          <div><div class="doc-name">Attestations d'assurance</div><div class="doc-desc">RC exploitation + multirisque · Art. 16 convention AOT n°409/25</div></div>
+          <div class="doc-status"><span class="badge red">Manquant</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon">🗺️</div>
+          <div><div class="doc-name">Extrait cadastral AN-156</div><div class="doc-desc">cadastre.gouv.fr · Département 06 · Commune Menton</div></div>
+          <div class="doc-status"><span class="badge gold">À télécharger</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon">📐</div>
+          <div><div class="doc-name">Plan de masse simplifié</div><div class="doc-desc">Croquis annoté du site · Zone A + Zone B fermée</div></div>
+          <div class="doc-status"><span class="badge gold">À produire</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon">📑</div>
+          <div><div class="doc-name">CERFA 13824*04 signé</div><div class="doc-desc">À signer par John NAISSE · V3.0 prête</div></div>
+          <div class="doc-status"><span class="badge gold">À signer</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon">🔧</div>
+          <div><div class="doc-name">Justificatifs levée réserves CEEV</div><div class="doc-desc">Chaise Volante (12 points) + Carrousel (12 points)</div></div>
+          <div class="doc-status"><span class="badge orange">En cours</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="ch-icon">✅</span>Documents disponibles</div>
+      <div class="card-body">
+        <div class="doc-item">
+          <div class="doc-icon">📋</div>
+          <div><div class="doc-name">DUERP V7 complet</div><div class="doc-desc">Document Unique · Mars 2026 · 11 chapitres</div></div>
+          <div class="doc-status"><span class="badge green">✓ Prêt</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon">🚒</div>
+          <div><div class="doc-name">Notice Sécurité Incendie</div><div class="doc-desc">V1.0 · 10 UP · 15 extincteurs · Alarme type 4</div></div>
+          <div class="doc-status"><span class="badge green">✓ Prêt</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon">♿</div>
+          <div><div class="doc-name">Notice Accessibilité + Dérogation</div><div class="doc-desc">V2.0 · Dérogation SPR · Convention AOT n°409/25</div></div>
+          <div class="doc-status"><span class="badge green">✓ Prêt</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon">📜</div>
+          <div><div class="doc-name">4 PV CEEV manèges</div><div class="doc-desc">COIGNOUX & Fils · 11/02/2026 · Chaise+Carrousel+Trampo+Pêche</div></div>
+          <div class="doc-status"><span class="badge green">✓ Reçu</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon">📂</div>
+          <div><div class="doc-name">Check-list ouverture V4</div><div class="doc-desc">5 sections · 6 attractions · Usage quotidien Loris</div></div>
+          <div class="doc-status"><span class="badge green">✓ Prêt</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon">🚨</div>
+          <div><div class="doc-name">Fiches réflexes V4</div><div class="doc-desc">P.A.S. · Incendie · Canicule · LOTO</div></div>
+          <div class="doc-status"><span class="badge green">✓ Prêt</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon">📊</div>
+          <div><div class="doc-name">Registres de sécurité V2</div><div class="doc-desc">R-EPI · R-FOR · R-AT · R-CTR · R-PTX</div></div>
+          <div class="doc-status"><span class="badge green">✓ Prêt</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon">📑</div>
+          <div><div class="doc-name">Règlement intérieur V1</div><div class="doc-desc">Horaires · EPI · VHSS · Discipline · Secteur forain</div></div>
+          <div class="doc-status"><span class="badge green">✓ Prêt</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CARTE ═══ -->
+<div id="page-carte" class="page">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Plan du parc — Localisation</div>
+      <div class="topbar-sub">5 Avenue de la Madone · 06500 Menton · Esplanade Francis Palmero</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">📍</span>KOALAND — 5 Avenue de la Madone, Menton</div>
+    <div class="card-body">
+      <div class="map-wrap">
+        <iframe
+          src="https://www.openstreetmap.org/export/embed.html?bbox=7.4950,43.7720,7.5050,43.7780&layer=mapnik&marker=43.7749,7.5000"
+          allowfullscreen loading="lazy">
+        </iframe>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+        <a href="https://www.google.com/maps/search/5+Avenue+de+la+Madone+Menton" target="_blank" class="btn btn-teal" style="text-decoration:none;">🗺️ Ouvrir dans Google Maps</a>
+        <a href="https://maps.apple.com/?q=5+Avenue+de+la+Madone+Menton" target="_blank" class="btn btn-ghost" style="text-decoration:none;">🍎 Plans Apple</a>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><span class="ch-icon">📋</span>Zones du parc</div>
+    <div class="card-body">
+      <table class="tbl">
+        <tr><th>Zone</th><th>Statut</th><th>Contenu</th><th>Remarque</th></tr>
+        <tr><td><strong>Zone A</strong></td><td><span class="badge green">Autorisée</span></td><td>Attractions principales, accueil, restauration</td><td>CR Mairie 13/02/2026</td></tr>
+        <tr><td><strong>Zone B</strong></td><td><span class="badge red">Fermée</span></td><td>Zone de travaux / extension</td><td>Permis de construire en cours</td></tr>
+        <tr><td><strong>Paillote</strong></td><td><span class="badge gold">Surveillance</span></td><td>Restauration, chaume — risque électrique</td><td>Q18 en attente</td></tr>
+        <tr><td><strong>Local technique</strong></td><td><span class="badge orange">À sécuriser</span></td><td>Stockage produits, maintenance</td><td>Photo 2 — encombrement</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+// ══════════════════════════════════════════════════
+// DONNÉES
+// ══════════════════════════════════════════════════
+
+const ACTIONS = [
+  // J+7
+  {id:'A01',titre:'Séparer produits chimiques des denrées alimentaires',desc:'Local dédié verrouillé + FDS affichées + EPI gants obligatoires',resp:'Loris CARDARELLI',delai:'J+7',priorite:'critique',ut:'UT5'},
+  {id:'A02',titre:'Obtenir Fiches de Données Sécurité (FDS) produits Quasar',desc:'Fournisseur + affichage zone utilisation + classeur FDS accessible',resp:'Loris CARDARELLI',delai:'J+7',priorite:'critique',ut:'Toutes UT'},
+  {id:'A03',titre:'Levée des 12 réserves CEEV — Chaise Volante',desc:'Sécurité store, clapets antirechute vérins, disjoncteur 30mA, ceintures, blocs secours, protection néons',resp:'John NAISSE',delai:'J+7',priorite:'critique',ut:'UT2'},
+  {id:'A04',titre:'Rapport Q18 QUALICONSULT → transmission Mairie de Menton',desc:'Dès réception du rapport (prévu 05/03/2026) transmettre à M. Layouni — Mairie',resp:'Loris CARDARELLI',delai:'J+7',priorite:'critique',ut:'UT3'},
+  {id:'A05',titre:'Remplacer étiquettes extincteurs N°9 et N°14',desc:'Classe D incorrecte → remplacer par Classe ABC. Vérifier également N°12',resp:'Loris CARDARELLI',delai:'J+7',priorite:'critique',ut:'Toutes UT'},
+  // J+30
+  {id:'A06',titre:'Levée des 12 réserves CEEV — Carrousel',desc:'Ceintures obligatoires dans sujets écartement + 11 autres points PV CEEV',resp:'John NAISSE',delai:'J+14',priorite:'important',ut:'UT2'},
+  {id:'A07',titre:'Installer différentiel 30mA amont boutique — Pêche aux Canards',desc:'Réserve CEEV n°1 — Intervention électricien qualifié',resp:'John NAISSE',delai:'J+30',priorite:'important',ut:'UT3'},
+  {id:'A08',titre:'Protocole canicule — opérateurs extérieurs',desc:'PNA canicule, point eau frais, pauses régulières, relevé température, EPI',resp:'Loris CARDARELLI',delai:'J+30',priorite:'important',ut:'UT2'},
+  {id:'A09',titre:'Mettre en place procédure signalement agression — accueil',desc:'Registre signalement + contacts d\'urgence + protocole verbal + formation',resp:'Loris CARDARELLI',delai:'J+30',priorite:'important',ut:'UT4'},
+  {id:'A10',titre:'Formation P.A.S. pour tout le personnel',desc:'Premiers soins · Chaque salarié doit connaître et appliquer le protocole',resp:'Loris CARDARELLI',delai:'J+30',priorite:'important',ut:'Toutes UT'},
+  {id:'A11',titre:'Réorganisation complète local technique',desc:'Désencombrement, balisage allées, rangement produits, nettoyage sol — Photo 2',resp:'Loris CARDARELLI',delai:'J+30',priorite:'important',ut:'UT3'},
+  {id:'A12',titre:'Diagnostic structurel fissures plafond et infiltrations',desc:'Faire intervenir un professionnel bâtiment — Photo 3 — Rapport écrit exigé',resp:'John NAISSE',delai:'J+30',priorite:'important',ut:'UT3'},
+  {id:'A13',titre:'Obtenir attestations d\'assurance RC + multirisque',desc:'Art. 16 convention n°409/25 — Bénéficiaire : Ville de Menton',resp:'John NAISSE',delai:'J+30',priorite:'important',ut:'UT1'},
+  // Long terme
+  {id:'A14',titre:'Contact Urbanisme Mairie — dossier permis construire Zone B',desc:'M. MAHEUT — Urbanisme Menton — Régularisation Zone B',resp:'John NAISSE',delai:'J+60',priorite:'moyen',ut:'UT1'},
+  {id:'A15',titre:'Réalisation session sensibilisation sécurité personnel',desc:'Demi-journée formation : DUERP, risques, procédures, EPI — Avec David Museur',resp:'Loris CARDARELLI',delai:'J+60',priorite:'moyen',ut:'Toutes UT'},
+  {id:'A16',titre:'Inventaire EPI — vérification tailles et état de chaque EPI',desc:'Gants, gilets, chaussures sécurité — Registre R-EPI mis à jour',resp:'Loris CARDARELLI',delai:'J+60',priorite:'moyen',ut:'Toutes UT'},
+  {id:'A17',titre:'Affichage réglementaire complet — tous emplacements',desc:'Extincteurs, évacuation, interdictions, secours, numéros urgence 112/15/18',resp:'Loris CARDARELLI',delai:'J+60',priorite:'moyen',ut:'Toutes UT'},
+  {id:'A18',titre:'Programme maintenance préventive annuel — toutes attractions',desc:'Tableau par attraction avec fréquences, prestataires, prochaine intervention',resp:'Loris CARDARELLI',delai:'J+90',priorite:'moyen',ut:'UT3'},
+  {id:'A19',titre:'Exercice évacuation incendie annuel',desc:'Scénario incendie paillote ou local technique — Évaluation et rapport écrit',resp:'Loris CARDARELLI',delai:'J+90',priorite:'moyen',ut:'Toutes UT'},
+  {id:'A20',titre:'Mise à jour DUERP V8 — intégration résultats questionnaire terrain',desc:'Après collecte des données Loris : mise à jour inventaire risques et plan d\'action',resp:'David Museur',delai:'J+90',priorite:'moyen',ut:'Toutes UT'},
+  {id:'A21',titre:'Inventaire biens meubles/immeubles par destination',desc:'Photos + factures pour chaque bien — Utilité : assurance et convention AOT',resp:'John NAISSE',delai:'J+90',priorite:'moyen',ut:'UT1'},
+  {id:'A22',titre:'Rapport annuel DUERP — présentation personnel',desc:'Bilan annuel prévention : stats AT, actions réalisées, plan suivant',resp:'David Museur',delai:'J+180',priorite:'faible',ut:'Toutes UT'},
+];
+
+const PHOTOS = [
+  {id:'P01',label:'Stockage produits chimiques + aliments',date:'11/02/2026',tag:'Critique',tagColor:'red',url:'https://d2xsxph8kpxj0f.cloudfront.net/113334785/8mpGQbep4uJwaw6uumPpdL/photo_terrain_1.jpg',analyse:'Bidons de produits Quasar et sprays chimiques stockés directement avec des denrées alimentaires sous le plan de travail de la paillote. Risque d\'intoxication par contamination croisée. IC = 12 — CRITIQUE. Action A01 déclenchée.'},
+  {id:'P02',label:'Local technique — encombrement',date:'11/02/2026',tag:'Important',tagColor:'orange',url:'https://d2xsxph8kpxj0f.cloudfront.net/113334785/8mpGQbep4uJwaw6uumPpdL/photo_terrain_2.jpg',analyse:'Local stockage avec allées bloquées, sol encombré, cartons et palettes combustibles non rangés. Risque d\'accident en cas d\'intervention maintenance. Action A11 déclenchée.'},
+  {id:'P03',label:'Fissures plafond — infiltrations',date:'11/02/2026',tag:'Moyen',tagColor:'gold',url:'https://d2xsxph8kpxj0f.cloudfront.net/113334785/8mpGQbep4uJwaw6uumPpdL/photo_terrain_3.jpg',analyse:'Fissures visibles au plafond avec traces d\'humidité et d\'infiltration. Cadre fenêtre endommagé. Diagnostic structurel professionnel requis. Action A12 déclenchée.'},
+  {id:'P04',label:'Chaise Volante — vue générale',date:'11/02/2026',tag:'Vérification',tagColor:'blue',url:'https://d2xsxph8kpxj0f.cloudfront.net/113334785/8mpGQbep4uJwaw6uumPpdL/photo_terrain_4.jpg',analyse:'Vue générale de la Chaise Volante. PV CEEV COIGNOUX & Fils du 11/02/2026 : FAVORABLE avec 12 réserves urgentes J+7. Voir action A03.'},
+  {id:'P05',label:'Carrousel — structure',date:'11/02/2026',tag:'Vérification',tagColor:'blue',url:'https://d2xsxph8kpxj0f.cloudfront.net/113334785/8mpGQbep4uJwaw6uumPpdL/photo_terrain_5.jpg',analyse:'Carrousel — PV CEEV COIGNOUX & Fils : FAVORABLE avec 12 réserves dont ceintures de sécurité obligatoires J+14. Voir action A06.'},
+  {id:'P06',label:'Extincteur N°9 — étiquette Classe D',date:'03/03/2026',tag:'Non-conforme',tagColor:'red',url:'https://d2xsxph8kpxj0f.cloudfront.net/113334785/8mpGQbep4uJwaw6uumPpdL/photo_terrain_6.jpg',analyse:'Extincteur N°9 portant une étiquette Classe D (feux métaux) alors qu\'il devrait être Classe ABC. Risque d\'utilisation inappropriée en cas d\'incendie. Action A05 déclenchée.'},
+  {id:'P07',label:'Paillote — installation électrique',date:'11/02/2026',tag:'Critique',tagColor:'red',url:'https://d2xsxph8kpxj0f.cloudfront.net/113334785/8mpGQbep4uJwaw6uumPpdL/photo_terrain_7.jpg',analyse:'Installation électrique de la paillote sous toiture chaume avec câbles apparents non protégés. Risque électrique majeur. Confirme l\'urgence du rapport Q18 QUALICONSULT. Action A04.'},
+  {id:'P08',label:'Trampolines — zone public',date:'11/02/2026',tag:'Conforme',tagColor:'green',url:'https://d2xsxph8kpxj0f.cloudfront.net/113334785/8mpGQbep4uJwaw6uumPpdL/photo_terrain_8.jpg',analyse:'Zone trampolines — PV CEEV COIGNOUX & Fils : CONFORME. Aucune réserve. Bonne tenue des équipements.'},
+  {id:'P09',label:'Entrée principale — accueil',date:'03/03/2026',tag:'OK',tagColor:'green',url:'https://d2xsxph8kpxj0f.cloudfront.net/113334785/8mpGQbep4uJwaw6uumPpdL/photo_terrain_9.jpg',analyse:'Entrée et zone accueil en bon état. Signalétique visible. Affichage réglementaire à compléter (numéros urgence, extincteurs). Action A17.'},
+  {id:'P10',label:'Zone fitness extérieure',date:'03/03/2026',tag:'À vérifier',tagColor:'gold',url:'https://d2xsxph8kpxj0f.cloudfront.net/113334785/8mpGQbep4uJwaw6uumPpdL/photo_terrain_10.jpg',analyse:'Zone fitness extérieure — Non inspectée CEEV. Vérification des équipements, ancrages et état des appareils à planifier. À intégrer dans maintenance préventive A18.'},
+];
+
+const QUESTIONS = [
+  {section:'Organisation & Documentation',items:[
+    'Le DUERP est accessible à tous les salariés',
+    'Les consignes de sécurité sont affichées dans toutes les zones',
+    'Le registre de sécurité est tenu à jour',
+    'Les habilitations électriques sont à jour pour le personnel technique',
+    'Les fiches de poste comportent les risques associés',
+    'Les attestations de formation SST sont disponibles',
+  ]},
+  {section:'Attractions — Vérification journalière',items:[
+    'Check-list ouverture Chaise Volante réalisée et signée',
+    'Check-list ouverture Carrousel réalisée et signée',
+    'Check-list ouverture Trampolines réalisée et signée',
+    'Check-list ouverture Pêche aux Canards réalisée et signée',
+    'Gonflables vérifiés (gonflage, ancrages, état tissu)',
+    'Barrières de sécurité en place sur toutes les attractions',
+    'Dispositifs d\'arrêt d\'urgence testés et fonctionnels',
+  ]},
+  {section:'Sécurité Incendie',items:[
+    'Extincteurs accessibles et signalés (min. 1 par zone)',
+    'Étiquettes extincteurs correctes et dates vérification valides',
+    'Issues de secours dégagées et signalées',
+    'Alarme incendie testée et fonctionnelle',
+    'Registre de vérification extincteurs à jour',
+    'Plan d\'évacuation affiché à l\'entrée et dans chaque zone',
+    'Paillote chaume : distance de sécurité respetée avec sources de chaleur',
+  ]},
+  {section:'Risques Électriques',items:[
+    'Tableau électrique verrouillé et protégé',
+    'Pas de câble nu ou connexion apparente',
+    'Différentiel 30mA installé et fonctionnel (Pêche aux Canards)',
+    'Habilitations électriques valides pour intervenants maintenance',
+    'Procédure LOTO affichée et appliquée lors des interventions',
+  ]},
+  {section:'Produits Chimiques & Restauration',items:[
+    'Produits chimiques séparés des denrées alimentaires',
+    'FDS disponibles et accessibles pour chaque produit',
+    'EPI (gants, masque) fournis pour manipulation produits chimiques',
+    'Friteuse et équipements chauds avec protection thermique',
+    'Plan de nettoyage et désinfection affiché et appliqué',
+  ]},
+  {section:'EPI & Formation',items:[
+    'Tous les EPI répertoriés dans le registre R-EPI',
+    'EPI adaptés à la morphologie de chaque salarié',
+    'Port des EPI effectif sur le terrain',
+    'Formation incendie réalisée pour l\'ensemble du personnel',
+    'Personnel formé à la procédure P.A.S.',
+    'SST identifié et formé (Loris CARDARELLI)',
+  ]},
+  {section:'Accueil & Clientèle',items:[
+    'Protocole d\'accueil visiteurs PMR en place',
+    'Procédure en cas d\'agression affichée et connue du personnel',
+    'Consignes de jauge (299 personnes max) respectées',
+    'Zones interdites balisées (Zone B)',
+    'Signalétique de sécurité visible à l\'entrée de chaque attraction',
+  ]},
+  {section:'Maintenance & Technique',items:[
+    'Planning maintenance préventive affiché et suivi',
+    'Interventions maintenance planifiées après fermeture au public',
+    'Registre des contrôles techniques (R-CTR) à jour',
+    'Local technique rangé et allées dégagées',
+    'Fissures et dommages structurels signalés et documentés',
+  ]},
+];
+
+// ══════════════════════════════════════════════════
+// ÉTAT
+// ══════════════════════════════════════════════════
+
+let state = {
+  actionsDone: {},
+  questAnswers: {},
+};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('koaland_state');
+    if (saved) state = { ...state, ...JSON.parse(saved) };
+  } catch(e) {}
+}
+
+function saveState() {
+  localStorage.setItem('koaland_state', JSON.stringify(state));
+  const dot = document.getElementById('save-dot');
+  dot.classList.add('visible');
+  setTimeout(() => dot.classList.remove('visible'), 2000);
+}
+
+setInterval(saveState, 30000);
+
+// ══════════════════════════════════════════════════
+// DÉMARRAGE DIRECT
+// ══════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', initApp);
+
+// ══════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════
+
+function nav(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelector(`[onclick="nav('${page}')"]`).classList.add('active');
+}
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+
+function initApp() {
+  loadState();
+  renderActions();
+  renderQuestionnaire();
+  renderPhotos();
+  renderRisques();
+  updateStats();
+}
+
+// ══════════════════════════════════════════════════
+// ACTIONS
+// ══════════════════════════════════════════════════
+
+function renderActions() {
+  const j7 = ACTIONS.filter(a => a.delai === 'J+7');
+  const j30 = ACTIONS.filter(a => ['J+14','J+30'].includes(a.delai));
+  const long = ACTIONS.filter(a => ['J+60','J+90','J+180'].includes(a.delai));
+
+  document.getElementById('actions-j7').innerHTML = j7.map(renderAction).join('');
+  document.getElementById('actions-j30').innerHTML = j30.map(renderAction).join('');
+  document.getElementById('actions-long').innerHTML = long.map(renderAction).join('');
+}
+
+function renderAction(a) {
+  const done = state.actionsDone[a.id];
+  const delaiColor = a.delai === 'J+7' ? 'red' : a.delai === 'J+14' ? 'orange' : a.delai === 'J+30' ? 'gold' : 'blue';
+  return `
+    <div class="action-row" id="row-${a.id}">
+      <div class="action-check ${done ? 'done' : ''}" onclick="toggleAction('${a.id}')"></div>
+      <div class="action-id">${a.id}</div>
+      <div class="action-content">
+        <div class="action-title" style="${done ? 'text-decoration:line-through;opacity:0.5;' : ''}">${a.titre}</div>
+        <div class="action-meta">
+          <span class="badge ${delaiColor}">${a.delai}</span>
+          <span style="color:var(--text2);">👤 ${a.resp}</span>
+          <span style="color:var(--text2);">${a.ut}</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-top:4px;">${a.desc}</div>
+      </div>
+    </div>`;
+}
+
+function toggleAction(id) {
+  state.actionsDone[id] = !state.actionsDone[id];
+  saveState();
+  renderActions();
+  updateStats();
+}
+
+// ══════════════════════════════════════════════════
+// STATS
+// ══════════════════════════════════════════════════
+
+function updateStats() {
+  const done = Object.values(state.actionsDone).filter(Boolean).length;
+  const total = ACTIONS.length;
+  const pct = Math.round(done / total * 100);
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-urgences').textContent = ACTIONS.filter(a => a.delai === 'J+7' && !state.actionsDone[a.id]).length;
+  document.getElementById('stat-encours').textContent = total - done;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('badge-actions').textContent = total - done;
+
+  const qDone = Object.keys(state.questAnswers).length;
+  const qTotal = QUESTIONS.reduce((s,sec) => s + sec.items.length, 0);
+  const qPct = Math.round(qDone / qTotal * 100);
+  document.getElementById('quest-fill').style.width = qPct + '%';
+  document.getElementById('quest-pct').textContent = qPct + '%';
+}
+
+// ══════════════════════════════════════════════════
+// QUESTIONNAIRE
+// ══════════════════════════════════════════════════
+
+function renderQuestionnaire() {
+  let html = '';
+  let qIdx = 0;
+  QUESTIONS.forEach(sec => {
+    html += `<div class="q-section-title">📋 ${sec.section}</div>`;
+    sec.items.forEach(q => {
+      const key = 'q_' + qIdx;
+      const ans = state.questAnswers[key] || '';
+      html += `
+        <div class="q-item">
+          <div class="q-text">${q}</div>
+          <div class="q-btns">
+            <button class="q-btn ${ans==='ok'?'selected-ok':''}" onclick="setAnswer('${key}','ok')">✅ OK</button>
+            <button class="q-btn ${ans==='no'?'selected-no':''}" onclick="setAnswer('${key}','no')">❌ NON</button>
+            <button class="q-btn ${ans==='partial'?'selected-partial':''}" onclick="setAnswer('${key}','partial')">⚡ PARTIEL</button>
+            <button class="q-btn ${ans==='na'?'selected-na':''}" onclick="setAnswer('${key}','na')">N/A</button>
+          </div>
+        </div>`;
+      qIdx++;
+    });
+  });
+  document.getElementById('q-inner').innerHTML = html;
+}
+
+function setAnswer(key, val) {
+  state.questAnswers[key] = val;
+  saveState();
+  renderQuestionnaire();
+  updateStats();
+}
+
+function resetQuestionnaire() {
+  if (!confirm('Réinitialiser toutes les réponses ?')) return;
+  state.questAnswers = {};
+  saveState();
+  renderQuestionnaire();
+  updateStats();
+}
+
+function sendQuestionnaire() {
+  const total = QUESTIONS.reduce((s,sec) => s + sec.items.length, 0);
+  const done = Object.keys(state.questAnswers).length;
+  const nonConformes = Object.entries(state.questAnswers).filter(([,v]) => v === 'no').length;
+  const body = `Résultats questionnaire terrain KOALAND%0A%0ADate : ${new Date().toLocaleDateString('fr-FR')}%0AQuestionnaire complété : ${done}/${total} questions%0ANon-conformités : ${nonConformes}%0A%0AEnvoyé depuis le portail KOALAND Sécurité 2026`;
+  window.location.href = `mailto:david.museur@gmail.com?subject=Questionnaire terrain KOALAND — ${new Date().toLocaleDateString('fr-FR')}&body=${body}`;
+}
+
+// ══════════════════════════════════════════════════
+// PHOTOS
+// ══════════════════════════════════════════════════
+
+function renderPhotos() {
+  document.getElementById('photo-grid').innerHTML = PHOTOS.map(p => `
+    <div class="photo-card" onclick="openLightbox('${p.url}','${p.label} — ${p.date}')">
+      <img src="${p.url}" alt="${p.label}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22140%22><rect fill=%22%230F2644%22 width=%22180%22 height=%22140%22/><text fill=%22%2394A3B8%22 x=%2290%22 y=%2275%22 text-anchor=%22middle%22 font-size=%2212%22>📸 Photo ${p.id}</text></svg>'">
+      <div class="ph-info">
+        <div class="ph-label">${p.label}</div>
+        <div class="ph-date">📅 ${p.date}</div>
+        <div class="ph-tag"><span class="badge ${p.tagColor}">${p.tag}</span></div>
+      </div>
+    </div>`).join('');
+}
+
+function openLightbox(url, caption) {
+  document.getElementById('lb-img').src = url;
+  document.getElementById('lb-caption').textContent = caption;
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+// ══════════════════════════════════════════════════
+// RISQUES
+// ══════════════════════════════════════════════════
+
+function renderRisques() {
+  const familles = [
+    {nom:'🔧 Mécanique',ic:'G3×P3=9',color:'red',items:[
+      'Coincement/écrasement attractions — vérification quotidienne requise',
+      'Défaillance pièces mécaniques — maintenance préventive programmée',
+      'Projection objets — barrières périmètre, EPI opérateurs',
+    ]},
+    {nom:'⚡ Électrique',ic:'G4×P2=8',color:'orange',items:[
+      'Contact direct câbles nus — paillote (voir Photo 7) — Q18 urgent',
+      'Défaut habilitation électrique — formation requise UT3',
+      'Absence différentiel 30mA — Pêche aux Canards — Action A07',
+    ]},
+    {nom:'🪜 Chute de hauteur',ic:'G4×P2=8',color:'orange',items:[
+      'Maintenance manèges — harnais + nacelle requis',
+      'Intervention toiture — plan de prévention obligatoire',
+    ]},
+    {nom:'🧪 Chimique',ic:'G3×P3=9',color:'red',items:[
+      'Stockage produits/aliments — IC=12 CRITIQUE — Action A01 ✓ réalisée 11/03',
+      'Absence FDS — Action A02 en cours',
+      'Produits dégraissants moteurs — EPI gants/masque requis',
+    ]},
+    {nom:'🔥 Incendie',ic:'G4×P2=8',color:'orange',items:[
+      'Paillote chaume — risque électrique majeur — Q18 en attente',
+      'Stockage combustibles locaux — réorganisation Action A11',
+      'Extincteurs non-conformes N°9 et N°14 — Action A05',
+    ]},
+    {nom:'💪 TMS',ic:'G2×P3=6',color:'gold',items:[
+      'Port de charges — formation gestes et postures',
+      'Station debout prolongée — accueil et caisse',
+      'Mouvements répétitifs — restauration',
+    ]},
+    {nom:'🧠 RPS',ic:'G3×P3=9',color:'red',items:[
+      'Violence externe clientèle — protocole signalement Action A09',
+      'Stress pics affluence week-ends — organisation renforts',
+      'Canicule sans protocole — Plan canicule Action A08',
+    ]},
+    {nom:'🌡️ Thermique',ic:'G3×P3=9',color:'red',items:[
+      'Brûlures friteuse/huile — tablier + gants thermiques',
+      'Canicule opérateurs extérieurs — point eau + pauses — Action A08',
+    ]},
+  ];
+
+  document.getElementById('risques-body').innerHTML = familles.map(f => `
+    <div style="margin-bottom:16px;padding:14px;background:rgba(255,255,255,0.02);border-radius:8px;border-left:3px solid ${f.color==='red'?'var(--red)':f.color==='orange'?'var(--orange)':'var(--gold)'}">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <strong style="font-size:14px;color:#fff;">${f.nom}</strong>
+        <span class="badge ${f.color}">${f.ic}</span>
+      </div>
+      ${f.items.map(i => `<div style="font-size:12px;color:var(--text2);padding:3px 0 3px 12px;border-left:1px solid rgba(255,255,255,0.1);">• ${i}</div>`).join('')}
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════
+// EXPORT
+// ══════════════════════════════════════════════════
+
+function exportActions() {
+  const header = 'ID;Titre;Responsable;Délai;Statut;UT\n';
+  const rows = ACTIONS.map(a =>
+    `${a.id};${a.titre};${a.resp};${a.delai};${state.actionsDone[a.id]?'Réalisé':'En cours'};${a.ut}`
+  ).join('\n');
+  const blob = new Blob(['\uFEFF' + header + rows], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'KOALAND_Plan_Actions_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+</script>
+</body>
+</html>
